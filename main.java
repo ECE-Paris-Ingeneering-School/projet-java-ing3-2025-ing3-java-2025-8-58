@@ -1,32 +1,33 @@
-import DAO.AttractionDAO;
-import DAO.ClientDAO;
+import Controller.AdminController;
+import Controller.LoginController;
+import Controller.ReservationController;
 import DAO.DaoFactory;
-import DAO.ReductionDAO;
-import DAO.ReservationDAO;
 import Model.Attraction;
 import Model.Client;
 import Model.Reduction;
 import Model.Reservation;
 
 import java.sql.SQLException;
+import java.sql.Date;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            DaoFactory daoFactory = DaoFactory.getInstance("achats", "root", "root");
+            DaoFactory daoFactory = DaoFactory.getInstance("attractions", "root", "root");
 
-            // Exemple d'utilisation des DAO
-            AttractionDAO attractionDAO = new AttractionDAO(daoFactory);
-            ClientDAO clientDAO = new ClientDAO(daoFactory);
-            ReductionDAO reductionDAO = new ReductionDAO(daoFactory);
-            ReservationDAO reservationDAO = new ReservationDAO(daoFactory);
+            // Initialisation des contrôleurs
+            AdminController adminController = new AdminController(daoFactory);
+            LoginController loginController = new LoginController(daoFactory);
+            ReservationController reservationController = new ReservationController(daoFactory);
+
+            // Exemple d'utilisation des contrôleurs
 
             // Ajouter une attraction
             Attraction attraction = new Attraction();
             attraction.setNomAttraction("Montagnes Russes");
             attraction.setDescriptionAttraction("Attraction à sensation forte");
             attraction.setPrixAttraction(15.0f);
-            attractionDAO.ajouterAttraction(attraction);
+            adminController.ajouterAttraction(attraction);
 
             // Ajouter un client
             Client client = new Client();
@@ -34,24 +35,28 @@ public class Main {
             client.setMdpClient("motdepasse");
             client.setNomClient("Dupont");
             client.setPrenomClient("Jean");
-            clientDAO.ajouterClient(client);
+            adminController.ajouterClient(client);
 
             // Ajouter une réduction
             Reduction reduction = new Reduction();
             reduction.setNomReduction("Réduction Enfant");
             reduction.setPourcentageReduction("20%");
             reduction.setTypeReduction(2);
-            reductionDAO.ajouterReduction(reduction);
+            adminController.ajouterReduction(reduction);
 
             // Ajouter une réservation
             Reservation reservation = new Reservation();
-            reservation.setDateReservation(java.sql.Date.valueOf("2023-10-15"));
+            reservation.setDateReservation(Date.valueOf("2023-10-15"));
             reservation.setIdClient(1);
             reservation.setIdAttraction(1);
             reservation.setIdClientReserve(1);
             reservation.setNomBillet("Dupont");
             reservation.setPrenomBillet("Jean");
-            reservationDAO.ajouterReservation(reservation);
+            reservationController.ajouterReservation(reservation);
+
+            // Vérifier la connexion d'un client
+            boolean isConnected = loginController.verifierConnexion("client@example.com", "motdepasse");
+            System.out.println("Connexion réussie : " + isConnected);
 
         } catch (SQLException e) {
             e.printStackTrace();
