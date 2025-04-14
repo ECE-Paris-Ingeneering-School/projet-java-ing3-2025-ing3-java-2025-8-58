@@ -9,16 +9,16 @@ import java.sql.SQLException;
 
 public class ClientDAO {
 
-    private Connection connection;
+    private DaoFactory daoFactory;
 
-    public ClientDAO(DaoFactory daoFactory) throws SQLException {
-        this.connection = daoFactory.getConnection();
+    public ClientDAO(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
     }
 
-    // Ajouter un nouveau client
     public void ajouterClient(Client client) throws SQLException {
         String query = "INSERT INTO Client (mail_client, mdp_client, nom_client, prenom_client) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, client.getMailClient());
             preparedStatement.setString(2, client.getMdpClient());
             preparedStatement.setString(3, client.getNomClient());
@@ -27,10 +27,10 @@ public class ClientDAO {
         }
     }
 
-    // Récupérer un client par son email
     public Client obtenirClientParEmail(String email) throws SQLException {
         String query = "SELECT * FROM Client WHERE mail_client = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -47,10 +47,10 @@ public class ClientDAO {
         return null;
     }
 
-    // Mettre à jour un client
     public void mettreAJourClient(Client client) throws SQLException {
         String query = "UPDATE Client SET mail_client = ?, mdp_client = ?, nom_client = ?, prenom_client = ? WHERE ID_client = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, client.getMailClient());
             preparedStatement.setString(2, client.getMdpClient());
             preparedStatement.setString(3, client.getNomClient());
@@ -60,10 +60,10 @@ public class ClientDAO {
         }
     }
 
-    // Supprimer un client
     public void supprimerClient(int idClient) throws SQLException {
         String query = "DELETE FROM Client WHERE ID_client = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, idClient);
             preparedStatement.executeUpdate();
         }

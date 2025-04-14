@@ -11,16 +11,16 @@ import java.util.List;
 
 public class ReductionDAO {
 
-    private Connection connection;
+    private DaoFactory daoFactory;
 
-    public ReductionDAO(DaoFactory daoFactory) throws SQLException {
-        this.connection = daoFactory.getConnection();
+    public ReductionDAO(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
     }
 
-    // Ajouter une nouvelle réduction
     public void ajouterReduction(Reduction reduction) throws SQLException {
         String query = "INSERT INTO Reduction (nom_reduction, pourcentage_reduction, type_reduction) VALUES (?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, reduction.getNomReduction());
             preparedStatement.setString(2, reduction.getPourcentageReduction());
             preparedStatement.setInt(3, reduction.getTypeReduction());
@@ -28,11 +28,11 @@ public class ReductionDAO {
         }
     }
 
-    // Récupérer toutes les réductions
     public List<Reduction> obtenirToutesReductions() throws SQLException {
         List<Reduction> reductions = new ArrayList<>();
         String query = "SELECT * FROM Reduction";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 Reduction reduction = new Reduction();
@@ -46,10 +46,10 @@ public class ReductionDAO {
         return reductions;
     }
 
-    // Mettre à jour une réduction
     public void mettreAJourReduction(Reduction reduction) throws SQLException {
         String query = "UPDATE Reduction SET nom_reduction = ?, pourcentage_reduction = ?, type_reduction = ? WHERE ID_reduction = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, reduction.getNomReduction());
             preparedStatement.setString(2, reduction.getPourcentageReduction());
             preparedStatement.setInt(3, reduction.getTypeReduction());
@@ -58,10 +58,10 @@ public class ReductionDAO {
         }
     }
 
-    // Supprimer une réduction
     public void supprimerReduction(int idReduction) throws SQLException {
         String query = "DELETE FROM Reduction WHERE ID_reduction = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, idReduction);
             preparedStatement.executeUpdate();
         }

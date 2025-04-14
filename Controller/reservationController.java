@@ -11,26 +11,22 @@ public class ReservationController {
 
     private ReservationDAO reservationDAO;
 
-    public ReservationController(DaoFactory daoFactory) throws SQLException {
-        this.reservationDAO = new ReservationDAO(daoFactory);
+    public ReservationController(DaoFactory daoFactory) {
+        this.reservationDAO = daoFactory.getReservationDAO();
     }
 
-    // Ajouter une nouvelle réservation
     public void ajouterReservation(Reservation reservation) throws SQLException {
         reservationDAO.ajouterReservation(reservation);
     }
 
-    // Récupérer toutes les réservations
     public List<Reservation> obtenirToutesReservations() throws SQLException {
         return reservationDAO.obtenirToutesReservations();
     }
 
-    // Mettre à jour une réservation
     public void mettreAJourReservation(Reservation reservation) throws SQLException {
         reservationDAO.mettreAJourReservation(reservation);
     }
 
-    // Supprimer une réservation
     public void supprimerReservation(int idReservation) throws SQLException {
         reservationDAO.supprimerReservation(idReservation);
     }

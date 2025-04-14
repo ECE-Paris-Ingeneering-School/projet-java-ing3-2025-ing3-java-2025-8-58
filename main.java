@@ -7,7 +7,6 @@ import View.LoginView;
 import View.ReservationView;
 
 import javax.swing.*;
-import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,10 +29,9 @@ public class Main {
             loginView.setVisible(true);
             reservationView.setVisible(true);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur de connexion à la base de données: " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
-

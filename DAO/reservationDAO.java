@@ -11,16 +11,16 @@ import java.util.List;
 
 public class ReservationDAO {
 
-    private Connection connection;
+    private DaoFactory daoFactory;
 
-    public ReservationDAO(DaoFactory daoFactory) throws SQLException {
-        this.connection = daoFactory.getConnection();
+    public ReservationDAO(DaoFactory daoFactory) {
+        this.daoFactory = daoFactory;
     }
 
-    // Ajouter une nouvelle réservation
     public void ajouterReservation(Reservation reservation) throws SQLException {
         String query = "INSERT INTO Reservation (date_reservation, ID_client, ID_attraction, ID_client_Reserve, nom_billet, prenom_billet) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDate(1, reservation.getDateReservation());
             preparedStatement.setInt(2, reservation.getIdClient());
             preparedStatement.setInt(3, reservation.getIdAttraction());
@@ -31,11 +31,11 @@ public class ReservationDAO {
         }
     }
 
-    // Récupérer toutes les réservations
     public List<Reservation> obtenirToutesReservations() throws SQLException {
         List<Reservation> reservations = new ArrayList<>();
         String query = "SELECT * FROM Reservation";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 Reservation reservation = new Reservation();
@@ -52,10 +52,10 @@ public class ReservationDAO {
         return reservations;
     }
 
-    // Mettre à jour une réservation
     public void mettreAJourReservation(Reservation reservation) throws SQLException {
         String query = "UPDATE Reservation SET date_reservation = ?, ID_client = ?, ID_attraction = ?, ID_client_Reserve = ?, nom_billet = ?, prenom_billet = ? WHERE ID_reservation = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDate(1, reservation.getDateReservation());
             preparedStatement.setInt(2, reservation.getIdClient());
             preparedStatement.setInt(3, reservation.getIdAttraction());
@@ -67,10 +67,10 @@ public class ReservationDAO {
         }
     }
 
-    // Supprimer une réservation
     public void supprimerReservation(int idReservation) throws SQLException {
         String query = "DELETE FROM Reservation WHERE ID_reservation = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, idReservation);
             preparedStatement.executeUpdate();
         }
