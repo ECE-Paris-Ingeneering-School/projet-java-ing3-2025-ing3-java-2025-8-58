@@ -26,7 +26,7 @@ public class Admin {
         return mailAdmin;
     }
 
-    public void setMailClient(String mailAdmin) {
+    public void setMailAdmin(String mailAdmin) {
         this.mailAdmin = mailAdmin;
     }
 
