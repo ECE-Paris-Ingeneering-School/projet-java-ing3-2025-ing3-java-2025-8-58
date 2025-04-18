@@ -1,7 +1,7 @@
 package View;
 
-import Controller.ReservationController;
-import Model.Reservation;
+import Controller.*;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,79 +9,119 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ReservationView extends JFrame {
 
     private ReservationController reservationController;
-
+    private AttractionController attractionController;
+    private JList<Attraction> attractionList;
+    private DefaultListModel<Attraction> attractionListModel;
+    private JPanel attractionDetailsPanel;
+    private JLabel attractionImageLabel;
+    private JTextArea attractionDescriptionArea;
+    private JButton reserveButton;
     private JTextField dateReservationField;
     private JTextField idClientField;
-    private JTextField idAttractionField;
-    private JTextField idClientReserveField;
-    private JTextField nomBilletField;
-    private JTextField prenomBilletField;
 
-    public ReservationView(ReservationController reservationController) {
+    public ReservationView(AttractionController attractionController,ReservationController reservationController) {
+        this.attractionController = attractionController;
         this.reservationController = reservationController;
         initComponents();
+        loadAttractions();
     }
 
     private void initComponents() {
         setTitle("Réservation");
-        setSize(400, 300);
+        setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(7, 2));
+        setLayout(new BorderLayout());
 
+        // Left panel for attraction list
+        attractionListModel = new DefaultListModel<>();
+        attractionList = new JList<>(attractionListModel);
+        attractionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        attractionList.addListSelectionListener(e -> showSelectedAttractionDetails());
+
+        JScrollPane attractionScrollPane = new JScrollPane(attractionList);
+        add(attractionScrollPane, BorderLayout.WEST);
+
+        // Right panel for attraction details
+        attractionDetailsPanel = new JPanel();
+        attractionDetailsPanel.setLayout(new BorderLayout());
+
+        attractionImageLabel = new JLabel();
+        attractionImageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        attractionDetailsPanel.add(attractionImageLabel, BorderLayout.NORTH);
+
+        attractionDescriptionArea = new JTextArea();
+        attractionDescriptionArea.setEditable(false);
+        attractionDescriptionArea.setLineWrap(true);
+        attractionDescriptionArea.setWrapStyleWord(true);
+        attractionDetailsPanel.add(new JScrollPane(attractionDescriptionArea), BorderLayout.CENTER);
+
+        reserveButton = new JButton("Réserver l'attraction");
+        reserveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //ajouterReservation();
+            }
+        });
+        attractionDetailsPanel.add(reserveButton, BorderLayout.SOUTH);
+
+        add(attractionDetailsPanel, BorderLayout.CENTER);
+
+        // Bottom panel for reservation fields
+        JPanel reservationPanel = new JPanel(new GridLayout(2, 2));
         JLabel dateReservationLabel = new JLabel("Date Réservation:");
         dateReservationField = new JTextField();
         JLabel idClientLabel = new JLabel("ID Client:");
         idClientField = new JTextField();
-        JLabel idAttractionLabel = new JLabel("ID Attraction:");
-        idAttractionField = new JTextField();
-        JLabel idClientReserveLabel = new JLabel("ID Client Réserve:");
-        idClientReserveField = new JTextField();
-        JLabel nomBilletLabel = new JLabel("Nom Billet:");
-        nomBilletField = new JTextField();
-        JLabel prenomBilletLabel = new JLabel("Prénom Billet:");
-        prenomBilletField = new JTextField();
-        JButton ajouterReservationButton = new JButton("Ajouter Réservation");
 
-        add(dateReservationLabel);
-        add(dateReservationField);
-        add(idClientLabel);
-        add(idClientField);
-        add(idAttractionLabel);
-        add(idAttractionField);
-        add(idClientReserveLabel);
-        add(idClientReserveField);
-        add(nomBilletLabel);
-        add(nomBilletField);
-        add(prenomBilletLabel);
-        add(prenomBilletField);
-        add(ajouterReservationButton);
+        reservationPanel.add(dateReservationLabel);
+        reservationPanel.add(dateReservationField);
+        reservationPanel.add(idClientLabel);
+        reservationPanel.add(idClientField);
 
-        ajouterReservationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ajouterReservation();
+        add(reservationPanel, BorderLayout.SOUTH);
+    }
+
+    private void loadAttractions() {
+        try {
+            List<Attraction> attractions = attractionController.obtenirToutesAttractions();
+            for (Attraction attraction : attractions) {
+                attractionListModel.addElement(attraction);
             }
-        });
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Erreur lors du chargement des attractions: " + ex.getMessage());
+        }
+    }
+
+    private void showSelectedAttractionDetails() {
+        Attraction selectedAttraction = attractionList.getSelectedValue();
+        if (selectedAttraction != null) {
+            attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getImagePath()));
+            attractionDescriptionArea.setText(selectedAttraction.getDescriptionAttraction());
+        }
     }
 
     private void ajouterReservation() {
+        Attraction selectedAttraction = attractionList.getSelectedValue();
+        if (selectedAttraction == null) {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une attraction.");
+            return;
+        }
+
         Date dateReservation = Date.valueOf(dateReservationField.getText());
         int idClient = Integer.parseInt(idClientField.getText());
-        int idAttraction = Integer.parseInt(idAttractionField.getText());
-        int idClientReserve = Integer.parseInt(idClientReserveField.getText());
-        String nomBillet = nomBilletField.getText();
-        String prenomBillet = prenomBilletField.getText();
+        int idAttraction = selectedAttraction.getIdAttraction();
 
-        Reservation reservation = new Reservation(dateReservation, idClient, idAttraction, idClientReserve, nomBillet, prenomBillet);
+        /*Reservation reservation = new Reservation(dateReservation, idClient, idAttraction);
         try {
             reservationController.ajouterReservation(reservation);
             JOptionPane.showMessageDialog(this, "Réservation ajoutée avec succès!");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de la réservation: " + ex.getMessage());
-        }
+        }*/
     }
 }
