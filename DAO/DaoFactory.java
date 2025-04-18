@@ -30,6 +30,10 @@ public class DaoFactory {
         return DriverManager.getConnection(url, username, password);
     }
 
+    public AdminDAO getAdminDAO() {
+        return new AdminDAO(this);
+    }
+
     public AttractionDAO getAttractionDAO() {
         return new AttractionDAO(this);
     }
