@@ -24,6 +24,7 @@ public class AttractionDAO {
             preparedStatement.setString(1, attraction.getNomAttraction());
             preparedStatement.setString(2, attraction.getDescriptionAttraction());
             preparedStatement.setFloat(3, attraction.getPrixAttraction());
+            preparedStatement.setString(4, attraction.getImagePath());
             preparedStatement.executeUpdate();
         }
     }
@@ -40,6 +41,7 @@ public class AttractionDAO {
                 attraction.setNomAttraction(resultSet.getString("nom_attraction"));
                 attraction.setDescriptionAttraction(resultSet.getString("description_attraction"));
                 attraction.setPrixAttraction(resultSet.getFloat("prix_attraction"));
+                attraction.setImagePath(resultSet.getString("chemin_image_attraction"));
                 attractions.add(attraction);
             }
         }
@@ -47,13 +49,14 @@ public class AttractionDAO {
     }
 
     public void mettreAJourAttraction(Attraction attraction) throws SQLException {
-        String query = "UPDATE Attraction SET nom_attraction = ?, description_attraction = ?, prix_attraction = ? WHERE ID_attraction = ?";
+        String query = "UPDATE Attraction SET nom_attraction = ?, description_attraction = ?, prix_attraction = ? , chemin_image_attraction WHERE ID_attraction = ?";
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, attraction.getNomAttraction());
             preparedStatement.setString(2, attraction.getDescriptionAttraction());
             preparedStatement.setFloat(3, attraction.getPrixAttraction());
-            preparedStatement.setInt(4, attraction.getIdAttraction());
+            preparedStatement.setString(4, attraction.getImagePath());
+            preparedStatement.setInt(5, attraction.getIdAttraction());
             preparedStatement.executeUpdate();
         }
     }

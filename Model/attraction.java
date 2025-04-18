@@ -5,6 +5,7 @@ public class Attraction {
     private String nomAttraction;
     private String descriptionAttraction;
     private float prixAttraction;
+    private String imagePath;
 
     // Constructeurs
     public Attraction() {}
@@ -48,13 +49,16 @@ public class Attraction {
         this.prixAttraction = prixAttraction;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     @Override
     public String toString() {
-        return "Attraction{" +
-                "idAttraction=" + idAttraction +
-                ", nomAttraction='" + nomAttraction + '\'' +
-                ", descriptionAttraction='" + descriptionAttraction + '\'' +
-                ", prixAttraction=" + prixAttraction +
-                '}';
+        return nomAttraction;
     }
 }
