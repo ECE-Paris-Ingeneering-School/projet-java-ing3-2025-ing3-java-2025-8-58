@@ -1,6 +1,7 @@
 package View;
 
-import Controller.LoginController;
+import Controller.LoginAdminController;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,19 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-public class LoginView extends JFrame {
+public class AdminLoginView extends JFrame {
 
-    private LoginController loginController;
-    private ReservationView reservationView; 
-    private AdminLoginView adminLoginView;
+    private LoginAdminController loginAdminController;
+    private AdminView adminView;
 
     private JTextField emailField;
     private JPasswordField passwordField;
 
-    public LoginView(LoginController loginController, ReservationView reservationView, AdminLoginView adminLoginView) {
-        this.loginController = loginController;
-        this.reservationView = reservationView;
-        this.adminLoginView = adminLoginView;
+    public AdminLoginView(LoginAdminController loginAdminController, AdminView adminView) {
+        this.loginAdminController = loginAdminController;
+        this.adminView = adminView;
         initComponents();
     }
 
@@ -35,27 +34,17 @@ public class LoginView extends JFrame {
         JLabel passwordLabel = new JLabel("Mot de Passe:");
         passwordField = new JPasswordField();
         JButton loginButton = new JButton("Se connecter");
-        JButton adminButton = new JButton("Administrateur");
 
         add(emailLabel);
         add(emailField);
         add(passwordLabel);
         add(passwordField);
         add(loginButton);
-        add(adminButton);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 verifierConnexion();
-            }
-        });
-
-        adminButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                setVisible(false);
-                adminLoginView.setVisible(true);
             }
         });
     }
@@ -65,11 +54,11 @@ public class LoginView extends JFrame {
         String motDePasse = new String(passwordField.getPassword());
 
         try {
-            boolean isConnected = loginController.verifierConnexion(email, motDePasse);
+            boolean isConnected = loginAdminController.verifierConnexion(email, motDePasse);
             if (isConnected) {
                 JOptionPane.showMessageDialog(this, "Connexion réussie!");
                 setVisible(false);
-                reservationView.setVisible(true);
+                adminView.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Email ou mot de passe incorrect.");
             }

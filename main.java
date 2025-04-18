@@ -1,7 +1,9 @@
 import Controller.AdminController;
+import Controller.LoginAdminController;
 import Controller.LoginController;
 import Controller.ReservationController;
 import DAO.DaoFactory;
+import View.AdminLoginView;
 import View.AdminView;
 import View.LoginView;
 import View.ReservationView;
@@ -17,17 +19,17 @@ public class Main {
             // Initialisation des contrôleurs
             AdminController adminController = new AdminController(daoFactory);
             LoginController loginController = new LoginController(daoFactory);
+            LoginAdminController loginAdminController = new LoginAdminController(daoFactory);
             ReservationController reservationController = new ReservationController(daoFactory);
 
             // Initialisation des vues
             AdminView adminView = new AdminView(adminController);
-            LoginView loginView = new LoginView(loginController);
             ReservationView reservationView = new ReservationView(reservationController);
+            AdminLoginView adminLoginView = new AdminLoginView(loginAdminController, adminView);
+            LoginView loginView = new LoginView(loginController, reservationView, adminLoginView); // Passer ReservationView à LoginView
 
-            // Afficher les vues
-            adminView.setVisible(true);
+            // Afficher la vue de connexion
             loginView.setVisible(true);
-            reservationView.setVisible(true);
 
         } catch (Exception e) {
             e.printStackTrace();
