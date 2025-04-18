@@ -13,18 +13,26 @@ public class AdminLoginView extends JFrame {
 
     private LoginAdminController loginAdminController;
     private AdminView adminView;
+    private LoginView loginView;
 
     private JTextField emailField;
     private JPasswordField passwordField;
 
-    public AdminLoginView(LoginAdminController loginAdminController, AdminView adminView) {
+    public AdminLoginView(LoginAdminController loginAdminController) {
         this.loginAdminController = loginAdminController;
-        this.adminView = adminView;
         initComponents();
     }
 
+    public void setAdminView(AdminView adminView){
+        this.adminView = adminView;
+    }
+
+    public void setLoginView(LoginView loginView){
+        this.loginView = loginView;
+    }
+
     private void initComponents() {
-        setTitle("Login");
+        setTitle("Login administrateur");
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(3, 2));
@@ -34,17 +42,27 @@ public class AdminLoginView extends JFrame {
         JLabel passwordLabel = new JLabel("Mot de Passe:");
         passwordField = new JPasswordField();
         JButton loginButton = new JButton("Se connecter");
+        JButton retourLoginViewButton = new JButton("Connexion Client");
 
         add(emailLabel);
         add(emailField);
         add(passwordLabel);
         add(passwordField);
         add(loginButton);
+        add(retourLoginViewButton);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 verifierConnexion();
+            }
+        });
+
+        retourLoginViewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                loginView.setVisible(true);
             }
         });
     }

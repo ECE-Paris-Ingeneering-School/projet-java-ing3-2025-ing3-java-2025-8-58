@@ -32,7 +32,7 @@ public class AdminView extends JFrame {
     }
 
     private void initComponents() {
-        setTitle("Admin Panel");
+        setTitle("Fenêtre administrateur");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(3, 2));

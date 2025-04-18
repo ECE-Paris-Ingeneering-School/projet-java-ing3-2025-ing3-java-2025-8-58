@@ -13,22 +13,33 @@ public class LoginView extends JFrame {
     private LoginController loginController;
     private ReservationView reservationView; 
     private AdminLoginView adminLoginView;
+    private SignUpView signUpView;
 
     private JTextField emailField;
     private JPasswordField passwordField;
 
-    public LoginView(LoginController loginController, ReservationView reservationView, AdminLoginView adminLoginView) {
+    public LoginView(LoginController loginController) {
         this.loginController = loginController;
-        this.reservationView = reservationView;
-        this.adminLoginView = adminLoginView;
         initComponents();
+    }
+
+    public void setReservationView(ReservationView reservationView){
+        this.reservationView = reservationView;
+    }
+
+    public void setadminLoginView(AdminLoginView adminLoginView){
+        this.adminLoginView = adminLoginView;
+    }
+
+    public void setSignUpView(SignUpView signUpView){
+        this.signUpView = signUpView;
     }
 
     private void initComponents() {
         setTitle("Login");
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3, 2));
+        setLayout(new GridLayout(4, 2));
 
         JLabel emailLabel = new JLabel("Email:");
         emailField = new JTextField();
@@ -36,6 +47,8 @@ public class LoginView extends JFrame {
         passwordField = new JPasswordField();
         JButton loginButton = new JButton("Se connecter");
         JButton adminButton = new JButton("Administrateur");
+        JButton signupButton = new JButton("Créer un compte");
+        JButton invitedButton = new JButton("Ne pas se connecter");
 
         add(emailLabel);
         add(emailField);
@@ -43,6 +56,8 @@ public class LoginView extends JFrame {
         add(passwordField);
         add(loginButton);
         add(adminButton);
+        add(signupButton);
+        add(invitedButton);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -56,6 +71,22 @@ public class LoginView extends JFrame {
             public void actionPerformed(ActionEvent e){
                 setVisible(false);
                 adminLoginView.setVisible(true);
+            }
+        });
+
+        signupButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                setVisible(false);
+                signUpView.setVisible(true);
+            }
+        });
+
+        invitedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                setVisible(false);
+                reservationView.setVisible(true);
             }
         });
     }
