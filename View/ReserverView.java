@@ -1,14 +1,14 @@
 package View;
 
+import Controller.ReservationController;
 import Model.Client;
 import Model.Reservation;
-import DAO.ReservationDAO;
 
+import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,12 +19,12 @@ public class ReserverView extends JFrame {
     private JTextField nbSeniorField;
     private JTextField nbEnfantField;
     private JButton reserverButton;
-    private ReservationDAO reservationDAO;
+    private ReservationController reservationController;
     private Client client;
     private int idAttraction;
 
-    public ReserverView(ReservationDAO reservationDAO, Client client, int idAttraction) {
-        this.reservationDAO = reservationDAO;
+    public ReserverView(ReservationController reservationController, Client client, int idAttraction) {
+        this.reservationController = reservationController;
         this.client = client;
         this.idAttraction = idAttraction;
         initComponents();
@@ -82,6 +82,7 @@ public class ReserverView extends JFrame {
             int nbEnfant = Integer.parseInt(nbEnfantField.getText());
 
             Reservation reservation = new Reservation();
+            reservation.setDate_reservation(new Date());
             reservation.setDate_visite(dateVisite);
             reservation.setNb_adulte(nbAdulte);
             reservation.setNb_senior(nbSenior);
@@ -92,10 +93,10 @@ public class ReserverView extends JFrame {
             if (client != null) {
                 reservation.setID_client(client.getIdClient());
             } else {
-                reservation.setID_client(0); 
+                reservation.setID_client(0);
             }
 
-            reservationDAO.ajouterReservation(reservation);
+            reservationController.ajouterReservation(reservation);
             JOptionPane.showMessageDialog(this, "Réservation effectuée avec succès!");
         } catch (ParseException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Veuillez entrer des valeurs valides.", "Erreur", JOptionPane.ERROR_MESSAGE);

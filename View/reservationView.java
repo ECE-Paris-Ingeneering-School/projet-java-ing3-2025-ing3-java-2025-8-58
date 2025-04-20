@@ -145,7 +145,7 @@ public class ReservationView extends JFrame {
     private void ouvrirPanierView() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
-            ReserverView reserverView = new ReserverView(reservationController, selectedAttraction.getIdAttraction());
+            ReserverView reserverView = new ReserverView(reservationController, client, selectedAttraction.getIdAttraction());
             reserverView.setVisible(true);
             this.setVisible(false); // Masquer la fenêtre actuelle
         } else {
