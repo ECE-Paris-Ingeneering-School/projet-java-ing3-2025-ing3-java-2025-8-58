@@ -14,9 +14,8 @@ public class LoginController {
         this.clientDAO = daoFactory.getClientDAO();
     }
 
-    public boolean verifierConnexion(String email, String motDePasse) throws SQLException {
-        Client client = clientDAO.obtenirClientParEmail(email);
-        return client != null && client.getMdpClient().equals(motDePasse);
+    public Client verifierConnexion(String email, String motDePasse) throws SQLException {
+        return clientDAO.obtenirClientParEmailEtMotDePasse(email, motDePasse);
     }
 
     public Client obtenirClientParEmail(String email) throws SQLException {

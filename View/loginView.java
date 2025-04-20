@@ -1,6 +1,7 @@
 package View;
 
 import Controller.LoginController;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -96,10 +97,11 @@ public class LoginView extends JFrame {
         String motDePasse = new String(passwordField.getPassword());
 
         try {
-            boolean isConnected = loginController.verifierConnexion(email, motDePasse);
-            if (isConnected) {
+            Client client = loginController.verifierConnexion(email, motDePasse);
+            if (client != null) {
                 JOptionPane.showMessageDialog(this, "Connexion réussie!");
                 setVisible(false);
+                reservationView.setClient(client); 
                 reservationView.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Email ou mot de passe incorrect.");
