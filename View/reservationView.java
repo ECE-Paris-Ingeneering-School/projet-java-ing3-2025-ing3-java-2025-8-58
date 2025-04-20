@@ -1,7 +1,8 @@
 package View;
 
-import Controller.*;
-import Model.*;
+import Controller.AttractionController;
+import Controller.ReservationController;
+import Model.Attraction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class ReservationView extends JFrame {
     private JTextField dateReservationField;
     private JTextField idClientField;
 
-    public ReservationView(AttractionController attractionController,ReservationController reservationController) {
+    public ReservationView(AttractionController attractionController, ReservationController reservationController) {
         this.attractionController = attractionController;
         this.reservationController = reservationController;
         initComponents();
@@ -64,7 +65,7 @@ public class ReservationView extends JFrame {
         reserveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //ajouterReservation();
+                ouvrirPanierView();
             }
         });
         attractionDetailsPanel.add(reserveButton, BorderLayout.SOUTH);
@@ -102,6 +103,17 @@ public class ReservationView extends JFrame {
         if (selectedAttraction != null) {
             attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getImagePath()));
             attractionDescriptionArea.setText(selectedAttraction.getDescriptionAttraction());
+        }
+    }
+
+    private void ouvrirPanierView() {
+        Attraction selectedAttraction = attractionList.getSelectedValue();
+        if (selectedAttraction != null) {
+            PanierView panierView = new PanierView(reservationController, selectedAttraction.getIdAttraction());
+            panierView.setVisible(true);
+            this.setVisible(false); // Masquer la fenêtre actuelle
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une attraction.");
         }
     }
 
