@@ -1,7 +1,7 @@
 package View;
 
-import Controller.*;
-import Model.*;
+import Controller.ReservationController;
+import Model.Reservation;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 public class HistoriqueView extends JFrame {
 
     private ReservationController reservationController;
+    private ReservationView reservationView;
     private JList<Date> dateList;
     private DefaultListModel<Date> dateListModel;
     private JPanel reservationDetailsPanel;
     private JTextArea reservationDetailsArea;
+    private JButton retourButton;
 
     public HistoriqueView(ReservationController reservationController) {
         this.reservationController = reservationController;
@@ -27,19 +29,42 @@ public class HistoriqueView extends JFrame {
         loadReservations();
     }
 
+    public void setReservationView(ReservationView reservationView){
+        this.reservationView = reservationView;
+    }
+
+
     private void initComponents() {
         setTitle("Historique des Réservations");
         setSize(1200, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Changé de EXIT_ON_CLOSE à DISPOSE_ON_CLOSE
         setLayout(new BorderLayout());
+
+        // Top panel
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        retourButton = new JButton("Retour");
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                reservationView.setVisible(true);
+            }
+        });
+        topPanel.add(retourButton);
+        add(topPanel, BorderLayout.NORTH);
 
         // Left panel for date list
         dateListModel = new DefaultListModel<>();
         dateList = new JList<>(dateListModel);
         dateList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        dateList.addListSelectionListener(e -> showSelectedDateReservations());
+        dateList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) { // Pour éviter les déclenchements multiples
+                showSelectedDateReservations();
+            }
+        });
 
         JScrollPane dateScrollPane = new JScrollPane(dateList);
+        dateScrollPane.setPreferredSize(new Dimension(200, 0));
         add(dateScrollPane, BorderLayout.WEST);
 
         // Right panel for reservation details
@@ -59,11 +84,17 @@ public class HistoriqueView extends JFrame {
         try {
             List<Reservation> reservations = reservationController.obtenirToutesReservations();
             Map<Date, List<Reservation>> reservationsByDate = reservations.stream()
-                    .collect(Collectors.groupingBy(Reservation::getDateReservation));
+                    .collect(Collectors.groupingBy(reservation -> new Date(reservation.getDate_reservation().getTime())));
 
-            reservationsByDate.keySet().forEach(dateListModel::addElement);
+            // Trier les dates par ordre chronologique
+            reservationsByDate.keySet().stream()
+                    .sorted()
+                    .forEach(dateListModel::addElement);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erreur lors du chargement des réservations: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, 
+                "Erreur lors du chargement des réservations: " + ex.getMessage(),
+                "Erreur", 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -71,29 +102,33 @@ public class HistoriqueView extends JFrame {
         Date selectedDate = dateList.getSelectedValue();
         if (selectedDate != null) {
             try {
-                // Filtrer les réservations pour ne garder que celles qui correspondent à la date sélectionnée
-                // .stream() : Convertit la liste en un flux (stream) pour permettre des opérations de traitement en chaîne
-                // .filter(reservation -> reservation.getDateReservation().equals(selectedDate)) :
-                //     Filtre les réservations pour ne garder que celles dont la date correspond à la date sélectionnée
-                // .collect(Collectors.toList()) : Collecte les réservations filtrées dans une nouvelle liste
-                List<Reservation> reservations = reservationController.obtenirToutesReservations().stream()
-                        .filter(reservation -> reservation.getDateReservation().equals(selectedDate))
-                        .collect(Collectors.toList());
-    
-                String details = "";
-                for (Reservation reservation : reservations) {
-                    details += "ID Réservation: " + reservation.getIdReservation() + "\n" +
-                               "ID Client: " + reservation.getIdClient() + "\n" +
-                               "ID Attraction: " + reservation.getIdAttraction() + "\n" +
-                               "Nom Billet: " + reservation.getNomBillet() + "\n" +
-                               "Prénom Billet: " + reservation.getPrenomBillet() + "\n" +
-                               "Payé: " + (reservation.getPayeBillet() ? "Oui" : "Non") + "\n\n";
+                List<Reservation> reservations = reservationController.obtenirReservationsParDate(selectedDate);
+                StringBuilder details = new StringBuilder();
+                
+                if (reservations.isEmpty()) {
+                    details.append("Aucune réservation trouvée pour cette date.\n");
+                } else {
+                    for (Reservation reservation : reservations) {
+                        details.append("ID Réservation: ").append(reservation.getID_reservation()).append("\n");
+                        details.append("Date Réservation: ").append(reservation.getDate_reservation()).append("\n");
+                        details.append("Date Visite: ").append(reservation.getDate_visite()).append("\n");
+                        details.append("Nombre d'adultes: ").append(reservation.getNb_adulte()).append("\n");
+                        details.append("Nombre de seniors: ").append(reservation.getNb_senior()).append("\n");
+                        details.append("Nombre d'enfants: ").append(reservation.getNb_enfant()).append("\n");
+                        details.append("ID Client: ").append(reservation.getID_client()).append("\n");
+                        details.append("ID Attraction: ").append(reservation.getID_attraction()).append("\n");
+                        details.append("Payée: ").append(reservation.isPaye_reservation() ? "Oui" : "Non").append("\n");
+                        details.append("-------------------------\n");
+                    }
                 }
-                reservationDetailsArea.setText(details);
+                
+                reservationDetailsArea.setText(details.toString());
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Erreur lors du chargement des réservations pour la date sélectionnée: " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, 
+                    "Erreur lors du chargement des réservations pour la date sélectionnée: " + ex.getMessage(),
+                    "Erreur", 
+                    JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-    
 }

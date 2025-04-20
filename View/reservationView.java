@@ -42,6 +42,10 @@ public class ReservationView extends JFrame {
         this.historiqueView = historiqueView;
     }
 
+    public void setLoginView(LoginView loginView){
+        this.loginView = loginView;
+    }
+
     public void setClient(Client client) {
         this.client = client;
     }

@@ -56,6 +56,31 @@ public class ReservationDAO {
         return reservations;
     }
 
+    public List<Reservation> obtenirReservationsParDate(java.sql.Date dateReservation) throws SQLException {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT * FROM Reservation WHERE date_reservation = ?";
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDate(1, dateReservation);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Reservation reservation = new Reservation();
+                    reservation.setID_reservation(resultSet.getInt("ID_reservation"));
+                    reservation.setDate_reservation(resultSet.getDate("date_reservation"));
+                    reservation.setDate_visite(resultSet.getDate("date_visite"));
+                    reservation.setNb_adulte(resultSet.getInt("nb_adulte"));
+                    reservation.setNb_senior(resultSet.getInt("nb_senior"));
+                    reservation.setNb_enfant(resultSet.getInt("nb_enfant"));
+                    reservation.setID_client(resultSet.getInt("ID_client"));
+                    reservation.setID_attraction(resultSet.getInt("ID_attraction"));
+                    reservation.setPaye_reservation(resultSet.getBoolean("paye_reservation"));
+                    reservations.add(reservation);
+                }
+            }
+        }
+        return reservations;
+    }
+
     public void mettreAJourReservation(Reservation reservation) throws SQLException {
         String query = "UPDATE Reservation SET date_reservation = ?, date_visite = ?, nb_adulte = ?, nb_senior = ?, nb_enfant = ?, ID_client = ?, ID_attraction = ?, paye_reservation = ? WHERE ID_reservation = ?";
         try (Connection connection = daoFactory.getConnection();
