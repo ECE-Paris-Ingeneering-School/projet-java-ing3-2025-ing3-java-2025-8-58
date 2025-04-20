@@ -15,10 +15,11 @@ public class Main {
             LoginAdminController loginAdminController = new LoginAdminController(daoFactory);
             AttractionController attractionController = new AttractionController(daoFactory);
             ReservationController reservationController = new ReservationController(daoFactory);
+            ReductionController reductionController = new ReductionController(daoFactory);
 
             // Initialisation des vues
             AdminView adminView = new AdminView(adminController);
-            ReservationView reservationView = new ReservationView(attractionController, reservationController);
+            ReservationView reservationView = new ReservationView(attractionController, reservationController, reductionController);
             AdminLoginView adminLoginView = new AdminLoginView(loginAdminController);
             SignUpView signUpView = new SignUpView(adminController);
             LoginView loginView = new LoginView(loginController);
@@ -30,6 +31,7 @@ public class Main {
             loginView.setadminLoginView(adminLoginView);
             loginView.setReservationView(reservationView);
             loginView.setSignUpView(signUpView);
+            reservationView.setLoginView(loginView);
 
             // Afficher la vue de connexion
             loginView.setVisible(true);

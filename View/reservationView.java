@@ -1,6 +1,7 @@
 package View;
 
 import Controller.AttractionController;
+import Controller.ReductionController;
 import Controller.ReservationController;
 import Model.*;
 
@@ -16,6 +17,7 @@ public class ReservationView extends JFrame {
 
     private ReservationController reservationController;
     private AttractionController attractionController;
+    private ReductionController reductionController;
     private LoginView loginView;
     private PanierView panierView;
     private HistoriqueView historiqueView;
@@ -31,11 +33,13 @@ public class ReservationView extends JFrame {
     private JButton retourConnexionButton;
 
 
-    public ReservationView(AttractionController attractionController, ReservationController reservationController) {
+    public ReservationView(AttractionController attractionController, ReservationController reservationController, ReductionController reductionController) {
         this.attractionController = attractionController;
         this.reservationController = reservationController;
+        this.reductionController = reductionController;
         initComponents();
         loadAttractions();
+
     }
 
     public void setHistoriqueView(HistoriqueView historiqueView){
@@ -120,6 +124,7 @@ public class ReservationView extends JFrame {
         panierButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                PanierView panierView = new PanierView(reservationController, attractionController, reductionController, client);
                 setVisible(false);
                 panierView.setVisible(true);
             }
