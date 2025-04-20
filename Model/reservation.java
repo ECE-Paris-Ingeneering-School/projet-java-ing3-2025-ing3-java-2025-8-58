@@ -10,17 +10,18 @@ public class Reservation {
     private int idClientReserve;
     private String nomBillet;
     private String prenomBillet;
-
+    private Boolean payeBillet;
     // Constructeurs
     public Reservation() {}
 
-    public Reservation(Date dateReservation, int idClient, int idAttraction, int idClientReserve, String nomBillet, String prenomBillet) {
+    public Reservation(Date dateReservation, int idClient, int idAttraction, int idClientReserve, String nomBillet, String prenomBillet, Boolean payeBillet) {
         this.dateReservation = dateReservation;
         this.idClient = idClient;
         this.idAttraction = idAttraction;
         this.idClientReserve = idClientReserve;
         this.nomBillet = nomBillet;
         this.prenomBillet = prenomBillet;
+        this.payeBillet = payeBillet;
     }
 
     // Getters et Setters
@@ -80,6 +81,14 @@ public class Reservation {
         this.prenomBillet = prenomBillet;
     }
 
+    public Boolean getPayeBillet() {
+        return payeBillet;
+    }
+
+    public void setPayeBillet(Boolean payeBillet) {
+        this.payeBillet = payeBillet;
+    }
+
     @Override
     public String toString() {
         return "Reservation{" +
@@ -90,6 +99,7 @@ public class Reservation {
                 ", idClientReserve=" + idClientReserve +
                 ", nomBillet='" + nomBillet + '\'' +
                 ", prenomBillet='" + prenomBillet + '\'' +
+                ", payeBillet='" + payeBillet + '\'' +
                 '}';
     }
 }
