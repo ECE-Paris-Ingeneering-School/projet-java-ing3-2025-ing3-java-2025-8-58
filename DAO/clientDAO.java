@@ -47,6 +47,26 @@ public class ClientDAO {
         return null;
     }
 
+    public Client obtenirClientParEmailEtMotDePasse(String email, String motDePasse) throws SQLException {
+        String query = "SELECT * FROM Client WHERE mail_client = ? AND mdp_client = ?";
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, motDePasse);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Client client = new Client();
+                client.setIdClient(resultSet.getInt("ID_client"));
+                client.setMailClient(resultSet.getString("mail_client"));
+                client.setMdpClient(resultSet.getString("mdp_client"));
+                client.setNomClient(resultSet.getString("nom_client"));
+                client.setPrenomClient(resultSet.getString("prenom_client"));
+                return client;
+            }
+        }
+        return null;
+    }
+
     public void mettreAJourClient(Client client) throws SQLException {
         String query = "UPDATE Client SET mail_client = ?, mdp_client = ?, nom_client = ?, prenom_client = ? WHERE ID_client = ?";
         try (Connection connection = daoFactory.getConnection();
