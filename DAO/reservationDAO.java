@@ -18,16 +18,17 @@ public class ReservationDAO {
     }
 
     public void ajouterReservation(Reservation reservation) throws SQLException {
-        String query = "INSERT INTO Reservation (date_reservation, ID_client, ID_attraction, ID_client_Reserve, nom_billet, prenom_billet, paye_billet) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Reservation (date_reservation, date_visite, nb_adulte, nb_senior, nb_enfant, ID_client, ID_attraction, paye_reservation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setDate(1, reservation.getDateReservation());
-            preparedStatement.setInt(2, reservation.getIdClient());
-            preparedStatement.setInt(3, reservation.getIdAttraction());
-            preparedStatement.setInt(4, reservation.getIdClientReserve());
-            preparedStatement.setString(5, reservation.getNomBillet());
-            preparedStatement.setString(6, reservation.getPrenomBillet());
-            preparedStatement.setBoolean(7, reservation.getPayeBillet());
+            preparedStatement.setDate(1, new java.sql.Date(reservation.getDate_reservation().getTime()));
+            preparedStatement.setDate(2, new java.sql.Date(reservation.getDate_visite().getTime()));
+            preparedStatement.setInt(3, reservation.getNb_adulte());
+            preparedStatement.setInt(4, reservation.getNb_senior());
+            preparedStatement.setInt(5, reservation.getNb_enfant());
+            preparedStatement.setInt(6, reservation.getID_client());
+            preparedStatement.setInt(7, reservation.getID_attraction());
+            preparedStatement.setBoolean(8, reservation.isPaye_reservation());
             preparedStatement.executeUpdate();
         }
     }
@@ -40,14 +41,15 @@ public class ReservationDAO {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 Reservation reservation = new Reservation();
-                reservation.setIdReservation(resultSet.getInt("ID_reservation"));
-                reservation.setDateReservation(resultSet.getDate("date_reservation"));
-                reservation.setIdClient(resultSet.getInt("ID_client"));
-                reservation.setIdAttraction(resultSet.getInt("ID_attraction"));
-                reservation.setIdClientReserve(resultSet.getInt("ID_client_Reserve"));
-                reservation.setNomBillet(resultSet.getString("nom_billet"));
-                reservation.setPrenomBillet(resultSet.getString("prenom_billet"));
-                reservation.setPayeBillet(resultSet.getBoolean("paye_billet"));
+                reservation.setID_reservation(resultSet.getInt("ID_reservation"));
+                reservation.setDate_reservation(resultSet.getDate("date_reservation"));
+                reservation.setDate_visite(resultSet.getDate("date_visite"));
+                reservation.setNb_adulte(resultSet.getInt("nb_adulte"));
+                reservation.setNb_senior(resultSet.getInt("nb_senior"));
+                reservation.setNb_enfant(resultSet.getInt("nb_enfant"));
+                reservation.setID_client(resultSet.getInt("ID_client"));
+                reservation.setID_attraction(resultSet.getInt("ID_attraction"));
+                reservation.setPaye_reservation(resultSet.getBoolean("paye_reservation"));
                 reservations.add(reservation);
             }
         }
@@ -55,17 +57,18 @@ public class ReservationDAO {
     }
 
     public void mettreAJourReservation(Reservation reservation) throws SQLException {
-        String query = "UPDATE Reservation SET date_reservation = ?, ID_client = ?, ID_attraction = ?, ID_client_Reserve = ?, nom_billet = ?, prenom_billet = ?, paye_billet = ? WHERE ID_reservation = ?";
+        String query = "UPDATE Reservation SET date_reservation = ?, date_visite = ?, nb_adulte = ?, nb_senior = ?, nb_enfant = ?, ID_client = ?, ID_attraction = ?, paye_reservation = ? WHERE ID_reservation = ?";
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setDate(1, reservation.getDateReservation());
-            preparedStatement.setInt(2, reservation.getIdClient());
-            preparedStatement.setInt(3, reservation.getIdAttraction());
-            preparedStatement.setInt(4, reservation.getIdClientReserve());
-            preparedStatement.setString(5, reservation.getNomBillet());
-            preparedStatement.setString(6, reservation.getPrenomBillet());
-            preparedStatement.setBoolean(7, reservation.getPayeBillet());
-            preparedStatement.setInt(8, reservation.getIdReservation());
+            preparedStatement.setDate(1, new java.sql.Date(reservation.getDate_reservation().getTime()));
+            preparedStatement.setDate(2, new java.sql.Date(reservation.getDate_visite().getTime()));
+            preparedStatement.setInt(3, reservation.getNb_adulte());
+            preparedStatement.setInt(4, reservation.getNb_senior());
+            preparedStatement.setInt(5, reservation.getNb_enfant());
+            preparedStatement.setInt(6, reservation.getID_client());
+            preparedStatement.setInt(7, reservation.getID_attraction());
+            preparedStatement.setBoolean(8, reservation.isPaye_reservation());
+            preparedStatement.setInt(9, reservation.getID_reservation());
             preparedStatement.executeUpdate();
         }
     }

@@ -1,105 +1,120 @@
 package Model;
 
-import java.sql.Date;
-
 public class Reservation {
-    private int idReservation;
-    private Date dateReservation;
-    private int idClient;
-    private int idAttraction;
-    private int idClientReserve;
-    private String nomBillet;
-    private String prenomBillet;
-    private Boolean payeBillet;
-    // Constructeurs
-    public Reservation() {}
+    // Attributs
+    private int ID_reservation;
+    private java.util.Date date_reservation;
+    private java.util.Date date_visite;
+    private int nb_adulte;
+    private int nb_senior;
+    private int nb_enfant;
+    private int ID_client;
+    private int ID_attraction;
+    private boolean paye_reservation;
 
-    public Reservation(Date dateReservation, int idClient, int idAttraction, int idClientReserve, String nomBillet, String prenomBillet, Boolean payeBillet) {
-        this.dateReservation = dateReservation;
-        this.idClient = idClient;
-        this.idAttraction = idAttraction;
-        this.idClientReserve = idClientReserve;
-        this.nomBillet = nomBillet;
-        this.prenomBillet = prenomBillet;
-        this.payeBillet = payeBillet;
+    // Constructeur par défaut
+    public Reservation() {
+    }
+
+    // Constructeur avec paramètres
+    public Reservation(int ID_reservation, java.util.Date date_reservation, java.util.Date date_visite, int nb_adulte, int nb_senior, int nb_enfant, int ID_client, int ID_attraction, boolean paye_reservation) {
+        this.ID_reservation = ID_reservation;
+        this.date_reservation = date_reservation;
+        this.date_visite = date_visite;
+        this.nb_adulte = nb_adulte;
+        this.nb_senior = nb_senior;
+        this.nb_enfant = nb_enfant;
+        this.ID_client = ID_client;
+        this.ID_attraction = ID_attraction;
+        this.paye_reservation = paye_reservation;
     }
 
     // Getters et Setters
-    public int getIdReservation() {
-        return idReservation;
+    public int getID_reservation() {
+        return ID_reservation;
     }
 
-    public void setIdReservation(int idReservation) {
-        this.idReservation = idReservation;
+    public void setID_reservation(int ID_reservation) {
+        this.ID_reservation = ID_reservation;
     }
 
-    public Date getDateReservation() {
-        return dateReservation;
+    public java.util.Date getDate_reservation() {
+        return date_reservation;
     }
 
-    public void setDateReservation(Date dateReservation) {
-        this.dateReservation = dateReservation;
+    public void setDate_reservation(java.util.Date date_reservation) {
+        this.date_reservation = date_reservation;
     }
 
-    public int getIdClient() {
-        return idClient;
+    public java.util.Date getDate_visite() {
+        return date_visite;
     }
 
-    public void setIdClient(int idClient) {
-        this.idClient = idClient;
+    public void setDate_visite(java.util.Date date_visite) {
+        this.date_visite = date_visite;
     }
 
-    public int getIdAttraction() {
-        return idAttraction;
+    public int getNb_adulte() {
+        return nb_adulte;
     }
 
-    public void setIdAttraction(int idAttraction) {
-        this.idAttraction = idAttraction;
+    public void setNb_adulte(int nb_adulte) {
+        this.nb_adulte = nb_adulte;
     }
 
-    public int getIdClientReserve() {
-        return idClientReserve;
+    public int getNb_senior() {
+        return nb_senior;
     }
 
-    public void setIdClientReserve(int idClientReserve) {
-        this.idClientReserve = idClientReserve;
+    public void setNb_senior(int nb_senior) {
+        this.nb_senior = nb_senior;
     }
 
-    public String getNomBillet() {
-        return nomBillet;
+    public int getNb_enfant() {
+        return nb_enfant;
     }
 
-    public void setNomBillet(String nomBillet) {
-        this.nomBillet = nomBillet;
+    public void setNb_enfant(int nb_enfant) {
+        this.nb_enfant = nb_enfant;
     }
 
-    public String getPrenomBillet() {
-        return prenomBillet;
+    public int getID_client() {
+        return ID_client;
     }
 
-    public void setPrenomBillet(String prenomBillet) {
-        this.prenomBillet = prenomBillet;
+    public void setID_client(int ID_client) {
+        this.ID_client = ID_client;
     }
 
-    public Boolean getPayeBillet() {
-        return payeBillet;
+    public int getID_attraction() {
+        return ID_attraction;
     }
 
-    public void setPayeBillet(Boolean payeBillet) {
-        this.payeBillet = payeBillet;
+    public void setID_attraction(int ID_attraction) {
+        this.ID_attraction = ID_attraction;
     }
 
+    public boolean isPaye_reservation() {
+        return paye_reservation;
+    }
+
+    public void setPaye_reservation(boolean paye_reservation) {
+        this.paye_reservation = paye_reservation;
+    }
+
+    // Méthode toString pour afficher les informations de la réservation
     @Override
     public String toString() {
         return "Reservation{" +
-                "idReservation=" + idReservation +
-                ", dateReservation=" + dateReservation +
-                ", idClient=" + idClient +
-                ", idAttraction=" + idAttraction +
-                ", idClientReserve=" + idClientReserve +
-                ", nomBillet='" + nomBillet + '\'' +
-                ", prenomBillet='" + prenomBillet + '\'' +
-                ", payeBillet='" + payeBillet + '\'' +
+                "ID_reservation=" + ID_reservation +
+                ", date_reservation=" + date_reservation +
+                ", date_visite=" + date_visite +
+                ", nb_adulte=" + nb_adulte +
+                ", nb_senior=" + nb_senior +
+                ", nb_enfant=" + nb_enfant +
+                ", ID_client=" + ID_client +
+                ", ID_attraction=" + ID_attraction +
+                ", paye_reservation=" + paye_reservation +
                 '}';
     }
 }
