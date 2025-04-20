@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : dim. 20 avr. 2025 à 16:09
+-- Généré le : dim. 20 avr. 2025 à 18:54
 -- Version du serveur : 8.0.40
 -- Version de PHP : 8.3.14
 
@@ -79,27 +79,6 @@ INSERT INTO `Attraction` (`ID_attraction`, `nom_attraction`, `description_attrac
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Billet`
---
-
-CREATE TABLE `Billet` (
-  `nom_billet` varchar(50) NOT NULL,
-  `prenom_billet` varchar(50) NOT NULL,
-  `date_billet` date NOT NULL,
-  `date_naissance_billet` date NOT NULL,
-  `ID_reservation` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `Billet`
---
-
-INSERT INTO `Billet` (`nom_billet`, `prenom_billet`, `date_billet`, `date_naissance_billet`, `ID_reservation`) VALUES
-('Vennin', 'Maxime', '2025-04-08', '2015-04-08', 1);
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `Client`
 --
 
@@ -116,6 +95,7 @@ CREATE TABLE `Client` (
 --
 
 INSERT INTO `Client` (`ID_client`, `mail_client`, `mdp_client`, `nom_client`, `prenom_client`) VALUES
+(0, '0', '0', '0', '0'),
 (1, 'client@gmail.com', 'client', 'Clientnom', 'Clientprenom'),
 (2, 'client2@gmail.com', 'client2', 'cli', 'ent2');
 
@@ -141,16 +121,22 @@ CREATE TABLE `Reduction` (
 CREATE TABLE `Reservation` (
   `ID_reservation` int NOT NULL,
   `date_reservation` date NOT NULL,
+  `date_visite` date NOT NULL,
+  `nb_adulte` int NOT NULL,
+  `nb_senior` int NOT NULL,
+  `nb_enfant` int NOT NULL,
   `ID_client` int NOT NULL,
-  `ID_attraction` int NOT NULL
+  `ID_attraction` int NOT NULL,
+  `paye_reservation` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `Reservation`
 --
 
-INSERT INTO `Reservation` (`ID_reservation`, `date_reservation`, `ID_client`, `ID_attraction`) VALUES
-(1, '2025-04-01', 1, 1);
+INSERT INTO `Reservation` (`ID_reservation`, `date_reservation`, `date_visite`, `nb_adulte`, `nb_senior`, `nb_enfant`, `ID_client`, `ID_attraction`, `paye_reservation`) VALUES
+(9, '2025-04-20', '2004-12-02', 1, 1, 1, 0, 1, 0),
+(10, '2025-04-20', '2003-10-02', 1, 1, 1, 0, 1, 0);
 
 --
 -- Index pour les tables déchargées
@@ -175,13 +161,6 @@ ALTER TABLE `Ajouter_Supprimer`
 --
 ALTER TABLE `Attraction`
   ADD PRIMARY KEY (`ID_attraction`);
-
---
--- Index pour la table `Billet`
---
-ALTER TABLE `Billet`
-  ADD PRIMARY KEY (`nom_billet`,`prenom_billet`),
-  ADD KEY `Billet_Reservation_FK` (`ID_reservation`);
 
 --
 -- Index pour la table `Client`
@@ -223,7 +202,7 @@ ALTER TABLE `Attraction`
 -- AUTO_INCREMENT pour la table `Client`
 --
 ALTER TABLE `Client`
-  MODIFY `ID_client` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID_client` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `Reduction`
@@ -235,7 +214,7 @@ ALTER TABLE `Reduction`
 -- AUTO_INCREMENT pour la table `Reservation`
 --
 ALTER TABLE `Reservation`
-  MODIFY `ID_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -248,12 +227,6 @@ ALTER TABLE `Ajouter_Supprimer`
   ADD CONSTRAINT `Ajouter_Supprimer_Administrateur_FK` FOREIGN KEY (`ID_admin`) REFERENCES `Administrateur` (`ID_admin`),
   ADD CONSTRAINT `Ajouter_Supprimer_Attraction1_FK` FOREIGN KEY (`ID_attraction`) REFERENCES `Attraction` (`ID_attraction`),
   ADD CONSTRAINT `Ajouter_Supprimer_Reduction0_FK` FOREIGN KEY (`ID_reduction`) REFERENCES `Reduction` (`ID_reduction`);
-
---
--- Contraintes pour la table `Billet`
---
-ALTER TABLE `Billet`
-  ADD CONSTRAINT `Billet_Reservation_FK` FOREIGN KEY (`ID_reservation`) REFERENCES `Reservation` (`ID_reservation`);
 
 --
 -- Contraintes pour la table `Reservation`

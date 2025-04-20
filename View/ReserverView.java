@@ -82,8 +82,16 @@ public class ReserverView extends JFrame {
             int nbEnfant = Integer.parseInt(nbEnfantField.getText());
 
             Reservation reservation = new Reservation();
-            reservation.setDate_reservation(new Date());
-            reservation.setDate_visite(dateVisite);
+
+            // Set the current date for date_reservation
+            Date currentDate = new Date();
+            String formattedCurrentDate = dateFormat.format(currentDate);
+            reservation.setDate_reservation(java.sql.Date.valueOf(formattedCurrentDate));
+
+            // Set the visit date for date_visite
+            String formattedVisitDate = dateFormat.format(dateVisite);
+            reservation.setDate_visite(java.sql.Date.valueOf(formattedVisitDate));
+
             reservation.setNb_adulte(nbAdulte);
             reservation.setNb_senior(nbSenior);
             reservation.setNb_enfant(nbEnfant);
@@ -95,6 +103,8 @@ public class ReserverView extends JFrame {
             } else {
                 reservation.setID_client(0);
             }
+
+            System.out.println(reservation.toString());
 
             reservationController.ajouterReservation(reservation);
             JOptionPane.showMessageDialog(this, "Réservation effectuée avec succès!");
