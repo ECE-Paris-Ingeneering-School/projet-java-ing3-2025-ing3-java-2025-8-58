@@ -2,7 +2,7 @@ package View;
 
 import Controller.AttractionController;
 import Controller.ReservationController;
-import Model.Attraction;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,14 +16,20 @@ public class ReservationView extends JFrame {
 
     private ReservationController reservationController;
     private AttractionController attractionController;
+    private LoginView loginView;
+    private PanierView panierView;
+    private HistoriqueView historiqueView;
+    private Client client;
     private JList<Attraction> attractionList;
     private DefaultListModel<Attraction> attractionListModel;
     private JPanel attractionDetailsPanel;
     private JLabel attractionImageLabel;
     private JTextArea attractionDescriptionArea;
     private JButton reserveButton;
-    private JTextField dateReservationField;
-    private JTextField idClientField;
+    private JButton panierButton;
+    private JButton historiqueButton;
+    private JButton retourConnexionButton;
+
 
     public ReservationView(AttractionController attractionController, ReservationController reservationController) {
         this.attractionController = attractionController;
@@ -32,11 +38,31 @@ public class ReservationView extends JFrame {
         loadAttractions();
     }
 
+    public void setHistoriqueView(HistoriqueView historiqueView){
+        this.historiqueView = historiqueView;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     private void initComponents() {
         setTitle("Réservation");
         setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        // Top panel 
+        JPanel topPanel = new JPanel(new GridLayout(1, 3));
+        panierButton = new JButton("Panier");
+        historiqueButton = new JButton("Historique des réservations");
+        retourConnexionButton = new JButton("Retour");
+
+        topPanel.add(retourConnexionButton);
+        topPanel.add(historiqueButton);
+        topPanel.add(panierButton);
+
+        add(topPanel, BorderLayout.NORTH);
 
         // Left panel for attraction list
         attractionListModel = new DefaultListModel<>();
@@ -72,19 +98,29 @@ public class ReservationView extends JFrame {
 
         add(attractionDetailsPanel, BorderLayout.CENTER);
 
-        // Bottom panel for reservation fields
-        JPanel reservationPanel = new JPanel(new GridLayout(2, 2));
-        JLabel dateReservationLabel = new JLabel("Date Réservation:");
-        dateReservationField = new JTextField();
-        JLabel idClientLabel = new JLabel("ID Client:");
-        idClientField = new JTextField();
-
-        reservationPanel.add(dateReservationLabel);
-        reservationPanel.add(dateReservationField);
-        reservationPanel.add(idClientLabel);
-        reservationPanel.add(idClientField);
-
-        add(reservationPanel, BorderLayout.SOUTH);
+        retourConnexionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                loginView.setVisible(true);
+            }
+        });
+        historiqueButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HistoriqueView historiqueView = new HistoriqueView(reservationController);
+                setVisible(false);
+                historiqueView.setVisible(true);
+            }
+        });
+        panierButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                panierView.setVisible(true);
+            }
+        });
+        
     }
 
     private void loadAttractions() {
@@ -109,31 +145,11 @@ public class ReservationView extends JFrame {
     private void ouvrirPanierView() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
-            PanierView panierView = new PanierView(reservationController, selectedAttraction.getIdAttraction());
-            panierView.setVisible(true);
+            ReserverView reserverView = new ReserverView(reservationController, selectedAttraction.getIdAttraction());
+            reserverView.setVisible(true);
             this.setVisible(false); // Masquer la fenêtre actuelle
         } else {
             JOptionPane.showMessageDialog(this, "Veuillez sélectionner une attraction.");
         }
-    }
-
-    private void ajouterReservation() {
-        Attraction selectedAttraction = attractionList.getSelectedValue();
-        if (selectedAttraction == null) {
-            JOptionPane.showMessageDialog(this, "Veuillez sélectionner une attraction.");
-            return;
-        }
-
-        Date dateReservation = Date.valueOf(dateReservationField.getText());
-        int idClient = Integer.parseInt(idClientField.getText());
-        int idAttraction = selectedAttraction.getIdAttraction();
-
-        /*Reservation reservation = new Reservation(dateReservation, idClient, idAttraction);
-        try {
-            reservationController.ajouterReservation(reservation);
-            JOptionPane.showMessageDialog(this, "Réservation ajoutée avec succès!");
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de la réservation: " + ex.getMessage());
-        }*/
     }
 }
