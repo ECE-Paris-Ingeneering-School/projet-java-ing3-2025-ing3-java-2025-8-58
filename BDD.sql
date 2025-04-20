@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : dim. 20 avr. 2025 à 09:48
+-- Généré le : dim. 20 avr. 2025 à 10:02
 -- Version du serveur : 8.0.40
 -- Version de PHP : 8.3.14
 
@@ -148,7 +148,8 @@ CREATE TABLE `Reservation` (
   `ID_attraction` int NOT NULL,
   `ID_client_Reserve` int NOT NULL,
   `nom_billet` varchar(50) NOT NULL,
-  `prenom_billet` varchar(50) NOT NULL
+  `prenom_billet` varchar(50) NOT NULL,
+  `paye_billet` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
