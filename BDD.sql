@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 18 avr. 2025 à 16:16
+-- Généré le : dim. 20 avr. 2025 à 09:48
 -- Version du serveur : 8.0.40
 -- Version de PHP : 8.3.14
 
@@ -61,7 +61,7 @@ CREATE TABLE `Ajouter_Supprimer` (
 CREATE TABLE `Attraction` (
   `ID_attraction` int NOT NULL,
   `nom_attraction` varchar(50) NOT NULL,
-  `description_attraction` varchar(50) NOT NULL,
+  `description_attraction` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `prix_attraction` float NOT NULL,
   `chemin_image_attraction` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
