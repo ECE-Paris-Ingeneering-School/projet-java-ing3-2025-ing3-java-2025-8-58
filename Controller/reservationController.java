@@ -27,6 +27,14 @@ public class ReservationController {
         return reservationDAO.obtenirReservationsParDate(dateReservation);
     }
 
+    public List<Reservation> obtenirReservationsParClient(int idClient) throws SQLException {
+        return reservationDAO.obtenirReservationsParClient(idClient);
+    }
+
+    public List<Reservation> obtenirReservationsParDateetClient(java.sql.Date dateReservation, int idClient) throws SQLException {
+        return reservationDAO.obtenirReservationsParDateEtClient(dateReservation, idClient);
+    }
+
     public void mettreAJourReservation(Reservation reservation) throws SQLException {
         reservationDAO.mettreAJourReservation(reservation);
     }

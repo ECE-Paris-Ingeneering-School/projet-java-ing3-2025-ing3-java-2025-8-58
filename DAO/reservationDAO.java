@@ -97,6 +97,56 @@ public class ReservationDAO {
             preparedStatement.executeUpdate();
         }
     }
+    public List<Reservation> obtenirReservationsParClient(int idClient) throws SQLException {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT * FROM Reservation WHERE ID_client = ?";
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, idClient);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Reservation reservation = new Reservation();
+                    reservation.setID_reservation(resultSet.getInt("ID_reservation"));
+                    reservation.setDate_reservation(resultSet.getDate("date_reservation"));
+                    reservation.setDate_visite(resultSet.getDate("date_visite"));
+                    reservation.setNb_adulte(resultSet.getInt("nb_adulte"));
+                    reservation.setNb_senior(resultSet.getInt("nb_senior"));
+                    reservation.setNb_enfant(resultSet.getInt("nb_enfant"));
+                    reservation.setID_client(resultSet.getInt("ID_client"));
+                    reservation.setID_attraction(resultSet.getInt("ID_attraction"));
+                    reservation.setPaye_reservation(resultSet.getBoolean("paye_reservation"));
+                    reservations.add(reservation);
+                }
+            }
+        }
+        return reservations;
+    }
+
+    public List<Reservation> obtenirReservationsParDateEtClient( java.sql.Date dateReservation, int idClient) throws SQLException {
+        List<Reservation> reservations = new ArrayList<>();
+        String query = "SELECT * FROM Reservation WHERE date_reservation = ? AND ID_client = ?";
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDate(1, dateReservation);
+            preparedStatement.setInt(2, idClient);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Reservation reservation = new Reservation();
+                    reservation.setID_reservation(resultSet.getInt("ID_reservation"));
+                    reservation.setDate_reservation(resultSet.getDate("date_reservation"));
+                    reservation.setDate_visite(resultSet.getDate("date_visite"));
+                    reservation.setNb_adulte(resultSet.getInt("nb_adulte"));
+                    reservation.setNb_senior(resultSet.getInt("nb_senior"));
+                    reservation.setNb_enfant(resultSet.getInt("nb_enfant"));
+                    reservation.setID_client(resultSet.getInt("ID_client"));
+                    reservation.setID_attraction(resultSet.getInt("ID_attraction"));
+                    reservation.setPaye_reservation(resultSet.getBoolean("paye_reservation"));
+                    reservations.add(reservation);
+                }
+            }
+        }
+        return reservations;
+    }
 
     public void supprimerReservation(int idReservation) throws SQLException {
         String query = "DELETE FROM Reservation WHERE ID_reservation = ?";

@@ -60,7 +60,7 @@ public class ReservationView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel 
+        // Top panel
         JPanel topPanel = new JPanel(new GridLayout(1, 3));
         panierButton = new JButton("Panier");
         historiqueButton = new JButton("Historique des réservations");
@@ -129,7 +129,7 @@ public class ReservationView extends JFrame {
                 panierView.setVisible(true);
             }
         });
-        
+
     }
 
     private void loadAttractions() {
