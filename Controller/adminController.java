@@ -7,7 +7,7 @@ import DAO.ReductionDAO;
 import Model.Attraction;
 import Model.Client;
 import Model.Reduction;
-
+import View.ModifierAttractionView;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -71,7 +71,8 @@ public class AdminController {
         reductionDAO.supprimerReduction(idReduction);
     }
 
-    public void mettreAJourCheminImageAttraction(int idAttraction, String cheminImageAttraction) throws SQLException {
-        attractionDAO.mettreAJourCheminImageAttraction(idAttraction, cheminImageAttraction);
+    public void ouvrirModifierAttractionView(Attraction attraction) {
+        ModifierAttractionView modifyAttractionView = new ModifierAttractionView(this, attraction);
+        modifyAttractionView.setVisible(true);
     }
 }

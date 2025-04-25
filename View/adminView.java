@@ -160,19 +160,7 @@ public class AdminView extends JFrame {
     }
 
     private void modifierAttraction() {
-        String nomAttraction = nomAttractionField.getText();
-        String descriptionAttraction = descriptionAttractionField.getText();
-        float prixAttraction = Float.parseFloat(prixAttractionField.getText());
-        String cheminImageAttraction = cheminImageAttractionField.getText(); // Récupérer le chemin de l'image
 
-        Attraction attraction = new Attraction(nomAttraction, descriptionAttraction, prixAttraction, cheminImageAttraction);
-        attraction.setIdAttraction(Integer.parseInt(JOptionPane.showInputDialog(this, "Entrez l'ID de l'attraction à modifier:")));
-        try {
-            adminController.mettreAJourAttraction(attraction);
-            JOptionPane.showMessageDialog(this, "Attraction modifiée avec succès!");
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erreur lors de la modification de l'attraction: " + e.getMessage());
-        }
     }
 
     private void ajouterClient() {
