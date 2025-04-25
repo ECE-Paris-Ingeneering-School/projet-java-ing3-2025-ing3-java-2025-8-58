@@ -18,6 +18,7 @@ public class AdminView extends JFrame {
     private JTextField nomAttractionField;
     private JTextField descriptionAttractionField;
     private JTextField prixAttractionField;
+    private JTextField cheminImageAttractionField; // Champ pour le chemin de l'image
     private JTextField mailClientField;
     private JTextField mdpClientField;
     private JTextField nomClientField;
@@ -40,7 +41,7 @@ public class AdminView extends JFrame {
         // Attraction Panel
         JPanel attractionPanel = new JPanel();
         attractionPanel.setBorder(BorderFactory.createTitledBorder("Attraction"));
-        attractionPanel.setLayout(new GridLayout(4, 2));
+        attractionPanel.setLayout(new GridLayout(6, 2));
 
         JLabel nomAttractionLabel = new JLabel("Nom Attraction:");
         nomAttractionField = new JTextField();
@@ -48,7 +49,10 @@ public class AdminView extends JFrame {
         descriptionAttractionField = new JTextField();
         JLabel prixAttractionLabel = new JLabel("Prix Attraction:");
         prixAttractionField = new JTextField();
+        JLabel cheminImageAttractionLabel = new JLabel("Chemin de l'image:");
+        cheminImageAttractionField = new JTextField(); // Champ pour le chemin de l'image
         JButton ajouterAttractionButton = new JButton("Ajouter Attraction");
+        JButton modifierAttractionButton = new JButton("Modifier Attraction"); // Bouton pour modifier une attraction
 
         attractionPanel.add(nomAttractionLabel);
         attractionPanel.add(nomAttractionField);
@@ -56,12 +60,22 @@ public class AdminView extends JFrame {
         attractionPanel.add(descriptionAttractionField);
         attractionPanel.add(prixAttractionLabel);
         attractionPanel.add(prixAttractionField);
+        attractionPanel.add(cheminImageAttractionLabel);
+        attractionPanel.add(cheminImageAttractionField);
         attractionPanel.add(ajouterAttractionButton);
+        attractionPanel.add(modifierAttractionButton);
 
         ajouterAttractionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ajouterAttraction();
+            }
+        });
+
+        modifierAttractionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                modifierAttraction();
             }
         });
 
@@ -134,13 +148,30 @@ public class AdminView extends JFrame {
         String nomAttraction = nomAttractionField.getText();
         String descriptionAttraction = descriptionAttractionField.getText();
         float prixAttraction = Float.parseFloat(prixAttractionField.getText());
+        String cheminImageAttraction = cheminImageAttractionField.getText(); // Récupérer le chemin de l'image
 
-        Attraction attraction = new Attraction(nomAttraction, descriptionAttraction, prixAttraction);
+        Attraction attraction = new Attraction(nomAttraction, descriptionAttraction, prixAttraction, cheminImageAttraction);
         try {
             adminController.ajouterAttraction(attraction);
             JOptionPane.showMessageDialog(this, "Attraction ajoutée avec succès!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de l'attraction: " + e.getMessage());
+        }
+    }
+
+    private void modifierAttraction() {
+        String nomAttraction = nomAttractionField.getText();
+        String descriptionAttraction = descriptionAttractionField.getText();
+        float prixAttraction = Float.parseFloat(prixAttractionField.getText());
+        String cheminImageAttraction = cheminImageAttractionField.getText(); // Récupérer le chemin de l'image
+
+        Attraction attraction = new Attraction(nomAttraction, descriptionAttraction, prixAttraction, cheminImageAttraction);
+        attraction.setIdAttraction(Integer.parseInt(JOptionPane.showInputDialog(this, "Entrez l'ID de l'attraction à modifier:")));
+        try {
+            adminController.mettreAJourAttraction(attraction);
+            JOptionPane.showMessageDialog(this, "Attraction modifiée avec succès!");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erreur lors de la modification de l'attraction: " + e.getMessage());
         }
     }
 

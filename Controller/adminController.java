@@ -70,4 +70,8 @@ public class AdminController {
     public void supprimerReduction(int idReduction) throws SQLException {
         reductionDAO.supprimerReduction(idReduction);
     }
+
+    public void mettreAJourCheminImageAttraction(int idAttraction, String cheminImageAttraction) throws SQLException {
+        attractionDAO.mettreAJourCheminImageAttraction(idAttraction, cheminImageAttraction);
+    }
 }

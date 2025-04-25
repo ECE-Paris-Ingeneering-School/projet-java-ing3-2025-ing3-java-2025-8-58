@@ -146,7 +146,7 @@ public class ReservationView extends JFrame {
     private void showSelectedAttractionDetails() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
-            attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getImagePath()));
+            attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getCheminImageAttraction()));
             attractionDescriptionArea.setText(selectedAttraction.getDescriptionAttraction());
         }
     }

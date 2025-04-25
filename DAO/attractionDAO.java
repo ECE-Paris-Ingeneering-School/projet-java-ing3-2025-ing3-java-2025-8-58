@@ -18,13 +18,13 @@ public class AttractionDAO {
     }
 
     public void ajouterAttraction(Attraction attraction) throws SQLException {
-        String query = "INSERT INTO Attraction (nom_attraction, description_attraction, prix_attraction) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Attraction (nom_attraction, description_attraction, prix_attraction, chemin_image_attraction) VALUES (?, ?, ?, ?)";
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, attraction.getNomAttraction());
             preparedStatement.setString(2, attraction.getDescriptionAttraction());
             preparedStatement.setFloat(3, attraction.getPrixAttraction());
-            preparedStatement.setString(4, attraction.getImagePath());
+            preparedStatement.setString(4, attraction.getCheminImageAttraction()); // Utiliser le nom correct de la colonne
             preparedStatement.executeUpdate();
         }
     }
@@ -41,7 +41,7 @@ public class AttractionDAO {
                 attraction.setNomAttraction(resultSet.getString("nom_attraction"));
                 attraction.setDescriptionAttraction(resultSet.getString("description_attraction"));
                 attraction.setPrixAttraction(resultSet.getFloat("prix_attraction"));
-                attraction.setImagePath(resultSet.getString("chemin_image_attraction"));
+                attraction.setCheminImageAttraction(resultSet.getString("chemin_image_attraction")); // Utiliser le nom correct de la colonne
                 attractions.add(attraction);
             }
         }
@@ -49,13 +49,13 @@ public class AttractionDAO {
     }
 
     public void mettreAJourAttraction(Attraction attraction) throws SQLException {
-        String query = "UPDATE Attraction SET nom_attraction = ?, description_attraction = ?, prix_attraction = ? , chemin_image_attraction WHERE ID_attraction = ?";
+        String query = "UPDATE Attraction SET nom_attraction = ?, description_attraction = ?, prix_attraction = ?, chemin_image_attraction = ? WHERE ID_attraction = ?";
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, attraction.getNomAttraction());
             preparedStatement.setString(2, attraction.getDescriptionAttraction());
             preparedStatement.setFloat(3, attraction.getPrixAttraction());
-            preparedStatement.setString(4, attraction.getImagePath());
+            preparedStatement.setString(4, attraction.getCheminImageAttraction()); // Utiliser le nom correct de la colonne
             preparedStatement.setInt(5, attraction.getIdAttraction());
             preparedStatement.executeUpdate();
         }
@@ -66,6 +66,16 @@ public class AttractionDAO {
         try (Connection connection = daoFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, idAttraction);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void mettreAJourCheminImageAttraction(int idAttraction, String cheminImageAttraction) throws SQLException {
+        String query = "UPDATE Attraction SET chemin_image_attraction=? WHERE ID_attraction = ?";
+        try (Connection connection = daoFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, cheminImageAttraction);
+            preparedStatement.setInt(2, idAttraction);
             preparedStatement.executeUpdate();
         }
     }
