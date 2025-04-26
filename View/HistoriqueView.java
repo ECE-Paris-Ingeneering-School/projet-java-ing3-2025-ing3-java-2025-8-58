@@ -1,7 +1,7 @@
 package View;
 
 import Controller.ReservationController;
-import Model.Reservation;
+import Model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,9 +22,15 @@ public class HistoriqueView extends JFrame {
     private JPanel reservationDetailsPanel;
     private JTextArea reservationDetailsArea;
     private JButton retourButton;
+    private int clientId;
 
-    public HistoriqueView(ReservationController reservationController) {
+    public HistoriqueView(ReservationController reservationController, Client client) {
         this.reservationController = reservationController;
+        if (client==null) {
+            this.clientId = 0;
+        }else{
+            this.clientId = client.getIdClient();
+        }
         initComponents();
         loadReservations();
     }
@@ -102,7 +108,7 @@ public class HistoriqueView extends JFrame {
         Date selectedDate = dateList.getSelectedValue();
         if (selectedDate != null) {
             try {
-                List<Reservation> reservations = reservationController.obtenirReservationsParDate(selectedDate);
+                List<Reservation> reservations = reservationController.obtenirReservationsParDateetClient(selectedDate,clientId);
                 StringBuilder details = new StringBuilder();
                 
                 if (reservations.isEmpty()) {
