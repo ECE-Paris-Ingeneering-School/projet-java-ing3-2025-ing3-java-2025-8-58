@@ -15,6 +15,7 @@ import Model.*;
 
 
 public class PanierView extends JFrame {
+    private ReservationView reservationView;
     private ReservationController reservationController;
     private AttractionController attractionController;
     private ReductionController reductionController;
@@ -26,6 +27,7 @@ public class PanierView extends JFrame {
     private JTextField expiryDateField;
     private JTextField cvvField;
     private JButton payButton;
+    private JButton retourButton;
 
     public PanierView(ReservationController reservationController, AttractionController attractionController, ReductionController reductionController, Client client) {
         this.reservationController = reservationController;
@@ -40,6 +42,10 @@ public class PanierView extends JFrame {
 
         initializeUI();
         loadReservationsAndCalculatePrices();
+    }
+
+    public void setReservationView(ReservationView reservationView){
+        this.reservationView=reservationView;
     }
 
     private void initializeUI() {
@@ -74,9 +80,19 @@ public class PanierView extends JFrame {
         cvvField = new JTextField();
         paymentPanel.add(cvvField);
 
+        retourButton = new JButton("Retour");
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                setVisible(false);
+                reservationView.setVisible(true);
+            }
+        });
+        paymentPanel.add(retourButton);
+
         payButton = new JButton("Payer");
         payButton.addActionListener(new PayButtonListener());
-        paymentPanel.add(new JLabel());
+        
         paymentPanel.add(payButton);
 
         mainPanel.add(paymentPanel, BorderLayout.SOUTH);

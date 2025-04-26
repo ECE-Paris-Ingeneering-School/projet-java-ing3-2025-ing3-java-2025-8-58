@@ -14,10 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ReserverView extends JFrame {
+    private ReservationView reservationView;
     private JTextField dateVisiteField;
     private JTextField nbAdulteField;
     private JTextField nbSeniorField;
     private JTextField nbEnfantField;
+    private JButton retourButton;
     private JButton reserverButton;
     private ReservationController reservationController;
     private Client client;
@@ -28,6 +30,10 @@ public class ReserverView extends JFrame {
         this.client = client;
         this.idAttraction = idAttraction;
         initComponents();
+    }
+
+    public void setReservationView(ReservationView reservationView){
+        this.reservationView = reservationView;
     }
 
     private void initComponents() {
@@ -59,6 +65,15 @@ public class ReserverView extends JFrame {
             }
         });
 
+        retourButton = new JButton("retour");
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                setVisible(false);
+                reservationView.setVisible(true);
+            }
+        });
+
         panel.add(dateVisiteLabel);
         panel.add(dateVisiteField);
         panel.add(nbAdulteLabel);
@@ -67,7 +82,7 @@ public class ReserverView extends JFrame {
         panel.add(nbSeniorField);
         panel.add(nbEnfantLabel);
         panel.add(nbEnfantField);
-        panel.add(new JLabel());
+        panel.add(retourButton);
         panel.add(reserverButton);
 
         add(panel);
@@ -108,6 +123,8 @@ public class ReserverView extends JFrame {
 
             reservationController.ajouterReservation(reservation);
             JOptionPane.showMessageDialog(this, "Réservation effectuée avec succès!");
+            setVisible(false);
+            reservationView.setVisible(true);
         } catch (ParseException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Veuillez entrer des valeurs valides.", "Erreur", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {

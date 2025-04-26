@@ -99,7 +99,7 @@ public class ReservationView extends JFrame {
         reserveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ouvrirPanierView();
+                ouvrirReserverView();
             }
         });
         attractionDetailsPanel.add(reserveButton, BorderLayout.SOUTH);
@@ -116,17 +116,13 @@ public class ReservationView extends JFrame {
         historiqueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                HistoriqueView historiqueView = new HistoriqueView(reservationController);
-                setVisible(false);
-                historiqueView.setVisible(true);
+                ouvrirHistoriqueView();
             }
         });
         panierButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanierView panierView = new PanierView(reservationController, attractionController, reductionController, client);
-                setVisible(false);
-                panierView.setVisible(true);
+                ouvrirPanierView();
             }
         });
 
@@ -151,14 +147,29 @@ public class ReservationView extends JFrame {
         }
     }
 
-    private void ouvrirPanierView() {
+    private void ouvrirReserverView() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
             ReserverView reserverView = new ReserverView(reservationController, client, selectedAttraction.getIdAttraction());
+            reserverView.setReservationView(this);
             reserverView.setVisible(true);
             this.setVisible(false); // Masquer la fenêtre actuelle
         } else {
             JOptionPane.showMessageDialog(this, "Veuillez sélectionner une attraction.");
         }
+    }
+
+    private void ouvrirHistoriqueView(){
+        historiqueView = new HistoriqueView(reservationController);
+        historiqueView.setReservationView(this);
+        setVisible(false);
+        historiqueView.setVisible(true);
+    }
+
+    private void ouvrirPanierView(){
+        PanierView panierView = new PanierView(reservationController, attractionController, reductionController, client);
+        panierView.setReservationView(this);
+        setVisible(false);
+        panierView.setVisible(true);
     }
 }
