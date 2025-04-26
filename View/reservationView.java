@@ -143,7 +143,8 @@ public class ReservationView extends JFrame {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
             attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getCheminImageAttraction()));
-            attractionDescriptionArea.setText(selectedAttraction.getDescriptionAttraction());
+            attractionDescriptionArea.setText("Prix : "+selectedAttraction.getPrixAttraction()+" €"+"\n"+
+                "Description : "+selectedAttraction.getDescriptionAttraction());
         }
     }
 
@@ -160,7 +161,7 @@ public class ReservationView extends JFrame {
     }
 
     private void ouvrirHistoriqueView(){
-        historiqueView = new HistoriqueView(reservationController);
+        historiqueView = new HistoriqueView(reservationController, client);
         historiqueView.setReservationView(this);
         setVisible(false);
         historiqueView.setVisible(true);
