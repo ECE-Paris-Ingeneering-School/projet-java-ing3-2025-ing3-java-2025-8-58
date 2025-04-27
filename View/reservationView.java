@@ -13,6 +13,10 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Classe représentant la vue de réservation d'attractions.
+ * Permet à l'utilisateur de voir la liste des attractions, leurs détails et de faire une réservation.
+ */
 public class ReservationView extends JFrame {
 
     private ReservationController reservationController;
@@ -32,35 +36,58 @@ public class ReservationView extends JFrame {
     private JButton historiqueButton;
     private JButton retourConnexionButton;
 
-
+    /**
+     * Constructeur de la vue de réservation.
+     *
+     * @param attractionController Le contrôleur pour les attractions.
+     * @param reservationController Le contrôleur pour les réservations.
+     * @param reductionController Le contrôleur pour les réductions.
+     */
     public ReservationView(AttractionController attractionController, ReservationController reservationController, ReductionController reductionController) {
         this.attractionController = attractionController;
         this.reservationController = reservationController;
         this.reductionController = reductionController;
         initComponents();
         loadAttractions();
-
     }
 
-    public void setHistoriqueView(HistoriqueView historiqueView){
+    /**
+     * Définit la vue de l'historique des réservations.
+     *
+     * @param historiqueView La vue des réservations passées.
+     */
+    public void setHistoriqueView(HistoriqueView historiqueView) {
         this.historiqueView = historiqueView;
     }
 
-    public void setLoginView(LoginView loginView){
+    /**
+     * Définit la vue de la connexion.
+     *
+     * @param loginView La vue de la connexion.
+     */
+    public void setLoginView(LoginView loginView) {
         this.loginView = loginView;
     }
 
+    /**
+     * Définit le client connecté.
+     *
+     * @param client Le client connecté.
+     */
     public void setClient(Client client) {
         this.client = client;
     }
 
+    /**
+     * Initialise les composants graphiques de la vue.
+     */
     private void initComponents() {
         setTitle("Réservation");
         setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Top panel
+        // Panneau supérieur avec les boutons
         JPanel topPanel = new JPanel(new GridLayout(1, 3));
         panierButton = new JButton("Panier");
         historiqueButton = new JButton("Historique des réservations");
@@ -72,7 +99,7 @@ public class ReservationView extends JFrame {
 
         add(topPanel, BorderLayout.NORTH);
 
-        // Left panel for attraction list
+        // Panneau gauche pour la liste des attractions
         attractionListModel = new DefaultListModel<>();
         attractionList = new JList<>(attractionListModel);
         attractionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -81,7 +108,7 @@ public class ReservationView extends JFrame {
         JScrollPane attractionScrollPane = new JScrollPane(attractionList);
         add(attractionScrollPane, BorderLayout.WEST);
 
-        // Right panel for attraction details
+        // Panneau droit pour afficher les détails de l'attraction
         attractionDetailsPanel = new JPanel();
         attractionDetailsPanel.setLayout(new BorderLayout());
 
@@ -106,6 +133,7 @@ public class ReservationView extends JFrame {
 
         add(attractionDetailsPanel, BorderLayout.CENTER);
 
+        // Actions des boutons
         retourConnexionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,21 +141,25 @@ public class ReservationView extends JFrame {
                 loginView.setVisible(true);
             }
         });
+
         historiqueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ouvrirHistoriqueView();
             }
         });
+
         panierButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ouvrirPanierView();
             }
         });
-
     }
 
+    /**
+     * Charge la liste des attractions à partir du contrôleur.
+     */
     private void loadAttractions() {
         try {
             List<Attraction> attractions = attractionController.obtenirToutesAttractions();
@@ -139,15 +171,21 @@ public class ReservationView extends JFrame {
         }
     }
 
+    /**
+     * Affiche les détails de l'attraction sélectionnée.
+     */
     private void showSelectedAttractionDetails() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
             attractionImageLabel.setIcon(new ImageIcon(selectedAttraction.getCheminImageAttraction()));
-            attractionDescriptionArea.setText("Prix : "+selectedAttraction.getPrixAttraction()+" €"+"\n"+
-                "Description : "+selectedAttraction.getDescriptionAttraction());
+            attractionDescriptionArea.setText("Prix : " + selectedAttraction.getPrixAttraction() + " €\n" +
+                    "Description : " + selectedAttraction.getDescriptionAttraction());
         }
     }
 
+    /**
+     * Ouvre la vue de réservation pour l'attraction sélectionnée.
+     */
     private void ouvrirReserverView() {
         Attraction selectedAttraction = attractionList.getSelectedValue();
         if (selectedAttraction != null) {
@@ -160,14 +198,20 @@ public class ReservationView extends JFrame {
         }
     }
 
-    private void ouvrirHistoriqueView(){
+    /**
+     * Ouvre la vue de l'historique des réservations.
+     */
+    private void ouvrirHistoriqueView() {
         historiqueView = new HistoriqueView(reservationController, client);
         historiqueView.setReservationView(this);
         setVisible(false);
         historiqueView.setVisible(true);
     }
 
-    private void ouvrirPanierView(){
+    /**
+     * Ouvre la vue du panier pour la réservation.
+     */
+    private void ouvrirPanierView() {
         PanierView panierView = new PanierView(reservationController, attractionController, reductionController, client);
         panierView.setReservationView(this);
         setVisible(false);

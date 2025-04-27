@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+/**
+ * Vue permettant la gestion des actions administratives telles que l'ajout et la modification des attractions,
+ * l'ajout de clients et de réductions. Elle permet également de gérer les interactions avec le contrôleur.
+ */
 public class AdminView extends JFrame {
 
     private AdminController adminController;
@@ -27,18 +31,27 @@ public class AdminView extends JFrame {
     private JTextField pourcentageReductionField;
     private JTextField typeReductionField;
 
+    /**
+     * Constructeur de la vue administrateur.
+     *
+     * @param adminController Le contrôleur associé à cette vue pour gérer les actions administratives.
+     */
     public AdminView(AdminController adminController) {
         this.adminController = adminController;
         initComponents();
     }
 
+    /**
+     * Initialise les composants de l'interface graphique pour la vue administrateur.
+     * Crée et configure les panneaux et champs de saisie pour gérer les attractions, clients et réductions.
+     */
     private void initComponents() {
         setTitle("Fenêtre administrateur");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(3, 2));
 
-        // Attraction Panel
+        // Panneau pour les attractions
         JPanel attractionPanel = new JPanel();
         attractionPanel.setBorder(BorderFactory.createTitledBorder("Attraction"));
         attractionPanel.setLayout(new GridLayout(6, 2));
@@ -65,6 +78,7 @@ public class AdminView extends JFrame {
         attractionPanel.add(ajouterAttractionButton);
         attractionPanel.add(modifierAttractionButton);
 
+        // Action pour ajouter une attraction
         ajouterAttractionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,6 +86,7 @@ public class AdminView extends JFrame {
             }
         });
 
+        // Action pour modifier une attraction
         modifierAttractionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -79,7 +94,7 @@ public class AdminView extends JFrame {
             }
         });
 
-        // Client Panel
+        // Panneau pour les clients
         JPanel clientPanel = new JPanel();
         clientPanel.setBorder(BorderFactory.createTitledBorder("Client"));
         clientPanel.setLayout(new GridLayout(5, 2));
@@ -104,6 +119,7 @@ public class AdminView extends JFrame {
         clientPanel.add(prenomClientField);
         clientPanel.add(ajouterClientButton);
 
+        // Action pour ajouter un client
         ajouterClientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +127,7 @@ public class AdminView extends JFrame {
             }
         });
 
-        // Reduction Panel
+        // Panneau pour les réductions
         JPanel reductionPanel = new JPanel();
         reductionPanel.setBorder(BorderFactory.createTitledBorder("Reduction"));
         reductionPanel.setLayout(new GridLayout(4, 2));
@@ -132,6 +148,7 @@ public class AdminView extends JFrame {
         reductionPanel.add(typeReductionField);
         reductionPanel.add(ajouterReductionButton);
 
+        // Action pour ajouter une réduction
         ajouterReductionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,6 +161,10 @@ public class AdminView extends JFrame {
         add(reductionPanel);
     }
 
+    /**
+     * Ajoute une nouvelle attraction en récupérant les informations saisies par l'administrateur.
+     * En cas de succès, affiche un message de confirmation. En cas d'erreur, affiche un message d'erreur.
+     */
     private void ajouterAttraction() {
         String nomAttraction = nomAttractionField.getText();
         String descriptionAttraction = descriptionAttractionField.getText();
@@ -159,6 +180,10 @@ public class AdminView extends JFrame {
         }
     }
 
+    /**
+     * Permet de modifier une attraction existante. L'administrateur peut choisir l'attraction à modifier
+     * via une liste déroulante. En cas d'erreur, un message est affiché.
+     */
     private void modifierAttraction() {
         try {
             // Récupérer toutes les attractions
@@ -195,7 +220,10 @@ public class AdminView extends JFrame {
         }
     }
 
-
+    /**
+     * Ajoute un client en récupérant les informations saisies dans les champs de texte.
+     * En cas de succès, un message de confirmation est affiché. Sinon, une erreur est affichée.
+     */
     private void ajouterClient() {
         String mailClient = mailClientField.getText();
         String mdpClient = mdpClientField.getText();
@@ -211,6 +239,10 @@ public class AdminView extends JFrame {
         }
     }
 
+    /**
+     * Ajoute une réduction en récupérant les informations saisies dans les champs de texte.
+     * En cas de succès, un message de confirmation est affiché. Sinon, une erreur est affichée.
+     */
     private void ajouterReduction() {
         String nomReduction = nomReductionField.getText();
         String pourcentageReduction = pourcentageReductionField.getText();

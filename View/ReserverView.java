@@ -13,6 +13,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Classe représentant la vue de réservation d'une attraction.
+ * Permet à l'utilisateur de saisir les informations de réservation pour une attraction.
+ */
 public class ReserverView extends JFrame {
     private ReservationView reservationView;
     private JTextField dateVisiteField;
@@ -25,6 +29,13 @@ public class ReserverView extends JFrame {
     private Client client;
     private int idAttraction;
 
+    /**
+     * Constructeur de la vue de réservation.
+     *
+     * @param reservationController Le contrôleur pour les réservations.
+     * @param client Le client effectuant la réservation.
+     * @param idAttraction L'ID de l'attraction à réserver.
+     */
     public ReserverView(ReservationController reservationController, Client client, int idAttraction) {
         this.reservationController = reservationController;
         this.client = client;
@@ -32,10 +43,18 @@ public class ReserverView extends JFrame {
         initComponents();
     }
 
-    public void setReservationView(ReservationView reservationView){
+    /**
+     * Définit la vue de réservation d'attractions.
+     *
+     * @param reservationView La vue de réservation d'attractions.
+     */
+    public void setReservationView(ReservationView reservationView) {
         this.reservationView = reservationView;
     }
 
+    /**
+     * Initialise les composants graphiques de la vue.
+     */
     private void initComponents() {
         setTitle("Réserver une attraction");
         setSize(400, 300);
@@ -57,6 +76,7 @@ public class ReserverView extends JFrame {
         JLabel nbEnfantLabel = new JLabel("Nombre d'enfants:");
         nbEnfantField = new JTextField();
 
+        // Bouton pour effectuer la réservation
         reserverButton = new JButton("Réserver");
         reserverButton.addActionListener(new ActionListener() {
             @Override
@@ -65,15 +85,17 @@ public class ReserverView extends JFrame {
             }
         });
 
-        retourButton = new JButton("retour");
+        // Bouton pour revenir à la vue de réservation précédente
+        retourButton = new JButton("Retour");
         retourButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 reservationView.setVisible(true);
             }
         });
 
+        // Ajout des composants au panneau
         panel.add(dateVisiteLabel);
         panel.add(dateVisiteField);
         panel.add(nbAdulteLabel);
@@ -85,49 +107,68 @@ public class ReserverView extends JFrame {
         panel.add(retourButton);
         panel.add(reserverButton);
 
+        // Ajout du panneau à la fenêtre
         add(panel);
     }
 
+    /**
+     * Effectue la réservation en récupérant les informations saisies par l'utilisateur.
+     *
+     * Cette méthode crée une nouvelle réservation et l'ajoute via le contrôleur de réservation.
+     * En cas d'erreur, elle affiche un message d'erreur.
+     */
     private void reserver() {
         try {
+            // Format de date attendu (YYYY-MM-DD)
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date dateVisite = dateFormat.parse(dateVisiteField.getText());
             int nbAdulte = Integer.parseInt(nbAdulteField.getText());
             int nbSenior = Integer.parseInt(nbSeniorField.getText());
             int nbEnfant = Integer.parseInt(nbEnfantField.getText());
 
+            // Création de la réservation
             Reservation reservation = new Reservation();
 
-            // Set the current date for date_reservation
+            // Définir la date actuelle pour la date de réservation
             Date currentDate = new Date();
             String formattedCurrentDate = dateFormat.format(currentDate);
             reservation.setDate_reservation(java.sql.Date.valueOf(formattedCurrentDate));
 
-            // Set the visit date for date_visite
+            // Définir la date de visite
             String formattedVisitDate = dateFormat.format(dateVisite);
             reservation.setDate_visite(java.sql.Date.valueOf(formattedVisitDate));
 
+            // Définir le nombre d'adultes, seniors et enfants
             reservation.setNb_adulte(nbAdulte);
             reservation.setNb_senior(nbSenior);
             reservation.setNb_enfant(nbEnfant);
+
+            // Définir l'ID de l'attraction et l'état de paiement
             reservation.setID_attraction(idAttraction);
             reservation.setPaye_reservation(false);
 
+            // Assigner l'ID client (s'il existe)
             if (client != null) {
                 reservation.setID_client(client.getIdClient());
             } else {
                 reservation.setID_client(0);
             }
 
+            // Afficher la réservation dans la console pour debug
             System.out.println(reservation.toString());
 
+            // Ajouter la réservation via le contrôleur
             reservationController.ajouterReservation(reservation);
             JOptionPane.showMessageDialog(this, "Réservation effectuée avec succès!");
+
+            // Fermer la vue actuelle et afficher la vue de réservation
             setVisible(false);
             reservationView.setVisible(true);
         } catch (ParseException | NumberFormatException ex) {
+            // En cas d'erreur de formatage ou de conversion
             JOptionPane.showMessageDialog(this, "Veuillez entrer des valeurs valides.", "Erreur", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
+            // En cas d'erreur lors de l'ajout de la réservation dans la base de données
             JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de la réservation.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
