@@ -217,30 +217,31 @@ public class PanierView extends JFrame {
             float totalAfterDiscount = totalAdult + (totalSenior - totalSeniorDiscount) + (totalChild - totalChildDiscount);
 
             sb.append(String.format("Total avant réductions: %.2f€\n", totalBeforeDiscount));
-            sb.append(String.format("Total après réductions seniors/enfants: %.2f€\n", totalAfterDiscount));
+            if (clientId!=0) {
+                sb.append(String.format("Total après réductions seniors/enfants: %.2f€\n", totalAfterDiscount));
 
-            // Réduction client fréquent
-            boolean hasPreviousReservation = reservationController.obtenirToutesReservations().stream()
-                    .anyMatch(res -> res.getID_client() == clientId &&
-                            res.isPaye_reservation());
 
-            if (hasPreviousReservation && reductionClientFrequent != null) {
-                float discountPercent = Float.parseFloat(reductionClientFrequent.getPourcentageReduction().replace("%", "")) / 100;
-                float discountAmount = totalAfterDiscount * discountPercent;
-                float finalTotal = totalAfterDiscount - discountAmount;
+                // Réduction client fréquent
+                boolean hasPreviousReservation = reservationController.obtenirToutesReservations().stream()
+                        .anyMatch(res -> res.getID_client() == clientId &&
+                                res.isPaye_reservation());
 
-                sb.append(String.format("\nRéduction %s (%s): -%.2f€\n",
-                        reductionClientFrequent.getNomReduction(),
-                        reductionClientFrequent.getPourcentageReduction(),
-                        discountAmount));
+                if (hasPreviousReservation && reductionClientFrequent != null) {
+                    float discountPercent = Float.parseFloat(reductionClientFrequent.getPourcentageReduction().replace("%", "")) / 100;
+                    float discountAmount = totalAfterDiscount * discountPercent;
+                    float finalTotal = totalAfterDiscount - discountAmount;
 
-                sb.append(String.format("Total final après réduction: %.2f€\n", finalTotal));
-            } else {
-                sb.append(String.format("\nTotal final: %.2f€\n", totalAfterDiscount));
-            }
+                    sb.append(String.format("\nRéduction %s (%s): -%.2f€\n",
+                            reductionClientFrequent.getNomReduction(),
+                            reductionClientFrequent.getPourcentageReduction(),
+                            discountAmount));
 
-            if (clientId == 0) {
-                sb.append("\nCréez votre compte pour bénéficier de réductions supplémentaires!\n");
+                    sb.append(String.format("Total final après réduction: %.2f€\n", finalTotal));
+                } else {
+                    sb.append(String.format("\nTotal final: %.2f€\n", totalAfterDiscount));
+                }
+            }else{
+                sb.append("\nCréez votre compte pour bénéficier de réductions !\n");
             }
 
             detailsArea.setText(sb.toString());
