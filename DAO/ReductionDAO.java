@@ -9,14 +9,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe DAO (Data Access Object) pour gérer les opérations liées à la table "Reduction" dans la base de données.
+ */
 public class ReductionDAO {
 
     private DaoFactory daoFactory;
 
+    /**
+     * Constructeur de la classe ReductionDAO
+     * @param daoFactory L'instance de DaoFactory pour obtenir la connexion à la base de données
+     */
     public ReductionDAO(DaoFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
 
+    /**
+     * Ajoute une nouvelle réduction à la base de données
+     * @param reduction L'objet Reduction à ajouter
+     * @throws SQLException Si une erreur SQL se produit
+     */
     public void ajouterReduction(Reduction reduction) throws SQLException {
         String query = "INSERT INTO Reduction (nom_reduction, pourcentage_reduction, type_reduction) VALUES (?, ?, ?)";
         try (Connection connection = daoFactory.getConnection();
@@ -28,6 +40,11 @@ public class ReductionDAO {
         }
     }
 
+    /**
+     * Récupère toutes les réductions de la base de données
+     * @return Une liste d'objets Reduction représentant toutes les réductions
+     * @throws SQLException Si une erreur SQL se produit
+     */
     public List<Reduction> obtenirToutesReductions() throws SQLException {
         List<Reduction> reductions = new ArrayList<>();
         String query = "SELECT * FROM Reduction";
@@ -46,6 +63,11 @@ public class ReductionDAO {
         return reductions;
     }
 
+    /**
+     * Met à jour une réduction dans la base de données
+     * @param reduction L'objet Reduction avec les nouvelles valeurs
+     * @throws SQLException Si une erreur SQL se produit
+     */
     public void mettreAJourReduction(Reduction reduction) throws SQLException {
         String query = "UPDATE Reduction SET nom_reduction = ?, pourcentage_reduction = ?, type_reduction = ? WHERE ID_reduction = ?";
         try (Connection connection = daoFactory.getConnection();
@@ -58,6 +80,11 @@ public class ReductionDAO {
         }
     }
 
+    /**
+     * Supprime une réduction de la base de données
+     * @param idReduction L'ID de la réduction à supprimer
+     * @throws SQLException Si une erreur SQL se produit
+     */
     public void supprimerReduction(int idReduction) throws SQLException {
         String query = "DELETE FROM Reduction WHERE ID_reduction = ?";
         try (Connection connection = daoFactory.getConnection();
