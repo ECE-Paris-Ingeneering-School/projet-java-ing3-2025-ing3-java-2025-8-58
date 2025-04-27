@@ -160,8 +160,41 @@ public class AdminView extends JFrame {
     }
 
     private void modifierAttraction() {
+        try {
+            // Récupérer toutes les attractions
+            java.util.List<Attraction> attractions = adminController.obtenirToutesAttractions();
 
+            // Afficher une liste de choix pour sélectionner l'attraction à modifier
+            String[] nomsAttractions = attractions.stream()
+                    .map(Attraction::getNomAttraction)
+                    .toArray(String[]::new);
+
+            String selection = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Choisissez une attraction à modifier :",
+                    "Modifier Attraction",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    nomsAttractions,
+                    nomsAttractions.length > 0 ? nomsAttractions[0] : null
+            );
+
+            if (selection != null) {
+                // Trouver l'attraction sélectionnée
+                Attraction attractionSelectionnee = attractions.stream()
+                        .filter(a -> a.getNomAttraction().equals(selection))
+                        .findFirst()
+                        .orElse(null);
+
+                if (attractionSelectionnee != null) {
+                    adminController.ouvrirModifierAttractionView(attractionSelectionnee);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erreur lors du chargement des attractions: " + e.getMessage());
+        }
     }
+
 
     private void ajouterClient() {
         String mailClient = mailClientField.getText();
