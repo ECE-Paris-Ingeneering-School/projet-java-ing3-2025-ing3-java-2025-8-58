@@ -31,6 +31,8 @@ public class AdminView extends JFrame {
     private JTextField pourcentageReductionField;
     private JTextField typeReductionField;
 
+    private LoginView loginView;
+
     /**
      * Constructeur de la vue administrateur.
      *
@@ -41,6 +43,10 @@ public class AdminView extends JFrame {
         initComponents();
     }
 
+    public void setLoginView(LoginView loginView) {
+        this.loginView = loginView;
+    }
+
     /**
      * Initialise les composants de l'interface graphique pour la vue administrateur.
      * Crée et configure les panneaux et champs de saisie pour gérer les attractions, clients et réductions.
@@ -49,7 +55,7 @@ public class AdminView extends JFrame {
         setTitle("Fenêtre administrateur");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(3, 2));
+        setLayout(new GridLayout(4, 2));
 
         // Panneau pour les attractions
         JPanel attractionPanel = new JPanel();
@@ -159,6 +165,17 @@ public class AdminView extends JFrame {
         add(attractionPanel);
         add(clientPanel);
         add(reductionPanel);
+
+
+        JButton retourButton = new JButton("Retour");
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                loginView.setVisible(true);
+            }
+        });
+        add(retourButton);
     }
 
     /**

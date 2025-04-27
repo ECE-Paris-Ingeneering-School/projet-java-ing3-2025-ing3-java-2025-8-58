@@ -110,6 +110,7 @@ public class AdminLoginView extends JFrame {
                 JOptionPane.showMessageDialog(this, "Connexion réussie!");
                 setVisible(false);
                 adminView.setVisible(true);
+                adminView.setLoginView(loginView);
             } else {
                 // Connexion échouée
                 JOptionPane.showMessageDialog(this, "Email ou mot de passe incorrect.");
