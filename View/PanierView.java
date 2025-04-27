@@ -1,5 +1,6 @@
 package View;
 
+import java.lang.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -132,21 +133,14 @@ public class PanierView extends JFrame {
             Date today = new Date();
             java.sql.Date sqlDate = new java.sql.Date(today.getTime());
 
-            // Récupère les réservations pour le jour actuel
             List<Reservation> reservations = reservationController.obtenirReservationsParDate(sqlDate);
             reservations.removeIf(res -> res.getID_client() != clientId || res.isPaye_reservation());
 
-            // Si aucune réservation n'est trouvée, désactive le paiement
             if (reservations.isEmpty()) {
                 detailsArea.setText("Aucune réservation à payer pour aujourd'hui.");
                 payButton.setEnabled(false);
                 return;
             }
-
-            // Vérifie si le client a des réservations précédentes pour appliquer des réductions
-            boolean hasPreviousReservation = reservationController.obtenirToutesReservations().stream()
-                    .anyMatch(res -> res.getID_client() == clientId &&
-                            !res.getDate_visite().equals(sqlDate));
 
             StringBuilder sb = new StringBuilder();
             sb.append("Réservations pour aujourd'hui (").append(new SimpleDateFormat("dd/MM/yyyy").format(today)).append("):\n\n");
@@ -154,23 +148,13 @@ public class PanierView extends JFrame {
             float totalAdult = 0;
             float totalSenior = 0;
             float totalChild = 0;
-            float totalBeforeDiscount = 0;
+            float totalSeniorDiscount = 0;
+            float totalChildDiscount = 0;
 
-            // Récupération des réductions
-            Reduction reductionClientFrequent = reductionController.obtenirToutesReductions().stream()
-                    .filter(r -> r.getTypeReduction() == 1) // Type 1 = client fréquent, 2 enfant, 3 sénior
-                    .findFirst()
-                    .orElse(null);
-            Reduction reductionEnfant = reductionController.obtenirToutesReductions().stream()
-                    .filter(r -> r.getTypeReduction() == 2)
-                    .findFirst()
-                    .orElse(null);
-            Reduction reductionSenior = reductionController.obtenirToutesReductions().stream()
-                    .filter(r -> r.getTypeReduction() == 3)
-                    .findFirst()
-                    .orElse(null);
+            Reduction reductionClientFrequent = reductionController.obtenirReductionParType(1);
+            Reduction reductionEnfant = reductionController.obtenirReductionParType(2);
+            Reduction reductionSenior = reductionController.obtenirReductionParType(3);
 
-            // Calcul des prix
             for (Reservation res : reservations) {
                 Attraction attraction = attractionController.obtenirToutesAttractions().stream()
                         .filter(a -> a.getIdAttraction() == res.getID_attraction())
@@ -183,41 +167,80 @@ public class PanierView extends JFrame {
                     float childPrice = res.getNb_enfant() * attraction.getPrixAttraction();
 
                     sb.append(attraction.getNomAttraction()).append(":\n");
-                    sb.append(String.format("  Adultes: %d x %.2f€ = %.2f€\n", res.getNb_adulte(), attraction.getPrixAttraction(), adultPrice));
-                    sb.append(String.format("  Seniors: %d x %.2f€ = %.2f€\n", res.getNb_senior(), attraction.getPrixAttraction(), seniorPrice));
-                    sb.append(String.format("  Enfants: %d x %.2f€ = %.2f€\n", res.getNb_enfant(), attraction.getPrixAttraction(), childPrice));
-                    sb.append(String.format("  Sous-total: %.2f€\n\n", adultPrice + seniorPrice + childPrice));
+                    sb.append(String.format("  Adultes: %d x %.2f€ = %.2f€\n",
+                            res.getNb_adulte(), attraction.getPrixAttraction(), adultPrice));
+
+                    // Calcul réduction senior
+                    float seniorDiscount = 0;
+                    if (reductionSenior != null && res.getNb_senior() > 0) {
+                        float seniorDiscountPercent = Float.parseFloat(reductionSenior.getPourcentageReduction().replace("%", "")) / 100;
+                        seniorDiscount = seniorPrice * seniorDiscountPercent;
+                        sb.append(String.format("  Seniors: %d x %.2f€ = %.2f€ (Réduction %s: -%.2f€)\n",
+                                res.getNb_senior(),
+                                attraction.getPrixAttraction(),
+                                seniorPrice,
+                                reductionSenior.getNomReduction(),
+                                seniorDiscount));
+                    } else {
+                        sb.append(String.format("  Seniors: %d x %.2f€ = %.2f€\n",
+                                res.getNb_senior(), attraction.getPrixAttraction(), seniorPrice));
+                    }
+
+                    // Calcul réduction enfant
+                    float childDiscount = 0;
+                    if (reductionEnfant != null && res.getNb_enfant() > 0) {
+                        float childDiscountPercent = Float.parseFloat(reductionEnfant.getPourcentageReduction().replace("%", "")) / 100;
+                        childDiscount = childPrice * childDiscountPercent;
+                        sb.append(String.format("  Enfants: %d x %.2f€ = %.2f€ (Réduction %s: -%.2f€)\n",
+                                res.getNb_enfant(),
+                                attraction.getPrixAttraction(),
+                                childPrice,
+                                reductionEnfant.getNomReduction(),
+                                childDiscount));
+                    } else {
+                        sb.append(String.format("  Enfants: %d x %.2f€ = %.2f€\n",
+                                res.getNb_enfant(), attraction.getPrixAttraction(), childPrice));
+                    }
+
+                    float subTotal = adultPrice + (seniorPrice - seniorDiscount) + (childPrice - childDiscount);
+                    sb.append(String.format("  Sous-total: %.2f€\n\n", subTotal));
 
                     totalAdult += adultPrice;
                     totalSenior += seniorPrice;
                     totalChild += childPrice;
+                    totalSeniorDiscount += seniorDiscount;
+                    totalChildDiscount += childDiscount;
                 }
             }
 
-            totalBeforeDiscount = totalAdult + totalSenior + totalChild;
-            sb.append(String.format("Total avant réductions: %.2f€\n", totalBeforeDiscount));
+            float totalBeforeDiscount = totalAdult + totalSenior + totalChild;
+            float totalAfterDiscount = totalAdult + (totalSenior - totalSeniorDiscount) + (totalChild - totalChildDiscount);
 
-            // Application des réductions
-            float totalDiscount = 0;
+            sb.append(String.format("Total avant réductions: %.2f€\n", totalBeforeDiscount));
+            sb.append(String.format("Total après réductions seniors/enfants: %.2f€\n", totalAfterDiscount));
 
             // Réduction client fréquent
-            if (hasPreviousReservation) {
-                if (reductionClientFrequent != null) {
-                    float discountPercent = Float.parseFloat(reductionClientFrequent.getPourcentageReduction().replace("%", "")) / 100;
-                    float discountAmount = totalBeforeDiscount * discountPercent;
-                    totalDiscount += discountAmount;
-                    sb.append(String.format("Réduction %s (%s): -%.2f€\n",
-                            reductionClientFrequent.getNomReduction(),
-                            reductionClientFrequent.getPourcentageReduction(),
-                            discountAmount));
-                }
+            boolean hasPreviousReservation = reservationController.obtenirToutesReservations().stream()
+                    .anyMatch(res -> res.getID_client() == clientId &&
+                            res.isPaye_reservation());
+
+            if (hasPreviousReservation && reductionClientFrequent != null) {
+                float discountPercent = Float.parseFloat(reductionClientFrequent.getPourcentageReduction().replace("%", "")) / 100;
+                float discountAmount = totalAfterDiscount * discountPercent;
+                float finalTotal = totalAfterDiscount - discountAmount;
+
+                sb.append(String.format("\nRéduction %s (%s): -%.2f€\n",
+                        reductionClientFrequent.getNomReduction(),
+                        reductionClientFrequent.getPourcentageReduction(),
+                        discountAmount));
+
+                sb.append(String.format("Total final après réduction: %.2f€\n", finalTotal));
+            } else {
+                sb.append(String.format("\nTotal final: %.2f€\n", totalAfterDiscount));
             }
 
-            float totalAfterDiscount = totalBeforeDiscount - totalDiscount;
-            sb.append(String.format("\nTotal après réductions: %.2f€\n", totalAfterDiscount));
-
             if (clientId == 0) {
-                sb.append(String.format("\nCréez votre compte pour bénéficier de réductions sur les réservations !\n"));
+                sb.append("\nCréez votre compte pour bénéficier de réductions supplémentaires!\n");
             }
 
             detailsArea.setText(sb.toString());
