@@ -109,21 +109,26 @@ public class HistoriqueView extends JFrame {
      * Les réservations sont triées par ordre chronologique.
      */
     private void loadReservations() {
-        try {
-            List<Reservation> reservations = reservationController.obtenirToutesReservations();
-            Map<Date, List<Reservation>> reservationsByDate = reservations.stream()
-                    .collect(Collectors.groupingBy(reservation -> new Date(reservation.getDate_reservation().getTime())));
+        if (clientId!=0){
+            try {
+                List<Reservation> reservations = reservationController.obtenirToutesReservations();
+                Map<Date, List<Reservation>> reservationsByDate = reservations.stream()
+                        .collect(Collectors.groupingBy(reservation -> new Date(reservation.getDate_reservation().getTime())));
 
-            // Trier les dates par ordre chronologique
-            reservationsByDate.keySet().stream()
-                    .sorted()
-                    .forEach(dateListModel::addElement); // Ajouter les dates triées au modèle de liste
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Erreur lors du chargement des réservations: " + ex.getMessage(),
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE); // Afficher un message d'erreur en cas d'exception
+                // Trier les dates par ordre chronologique
+                reservationsByDate.keySet().stream()
+                        .sorted()
+                        .forEach(dateListModel::addElement); // Ajouter les dates triées au modèle de liste
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Erreur lors du chargement des réservations: " + ex.getMessage(),
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE); // Afficher un message d'erreur en cas d'exception
+            }
+        }else{
+            reservationDetailsArea.setText("Veuillez vous connecter à un compte client pour voir l'historique des réservations");
         }
+
     }
 
     /**
