@@ -25,13 +25,12 @@ public class StatistiquesController {
     }
 
     /**
-     * Méthode pour récupérer les données de réservation par attraction et les passer à la vue pour affichage.
+     * Méthode pour récupérer les données et les passer à la vue pour affichage.
      */
     public void afficherStatistiques() {
-        // Récupérer les données du modèle
-        Map<String, Integer> data = statistiquesModel.getReservationsParAttraction();
+        Map<String, Integer> dataAttractions = statistiquesModel.getReservationsParAttraction();
+        Map<String, Integer> dataMois = statistiquesModel.getReservationsParMois(); // <<< ajoute cette méthode dans le Model
 
-        // Passer les données à la vue pour l'affichage
-        statistiquesView.afficherGraphique(data);
+        statistiquesView.afficherStatistiques(dataAttractions, dataMois);
     }
 }

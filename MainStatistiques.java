@@ -39,6 +39,9 @@ public class MainStatistiques {
             // Afficher la vue des statistiques
             statistiquesView.setVisible(true);
 
+            // OU afficher l'histogramme par mois
+            statistiquesController.afficherStatistiques();
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erreur de connexion à la base de données: " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
