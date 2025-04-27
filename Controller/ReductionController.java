@@ -80,4 +80,20 @@ public class ReductionController {
         }
         return null;
     }
+
+    /**
+     * Récupère une réduction par son type
+     * @param typeReduction 1 client fréquent, 2 client enfant, 3 client 
+     * @return La réduction trouvée ou null
+     * @throws SQLException en cas d'erreur SQL
+     */
+    public Reduction obtenirReductionParType(int typeReduction) throws SQLException {
+        List<Reduction> reductions = reductionDAO.obtenirToutesReductions();
+        for (Reduction reduction : reductions) {
+            if (reduction.getTypeReduction() == typeReduction) {
+                return reduction;
+            }
+        }
+        return null;
+    }
 }

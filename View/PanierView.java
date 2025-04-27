@@ -1,7 +1,5 @@
 package View;
 
-import DAO.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -60,7 +58,6 @@ public class PanierView extends JFrame {
         // Section détails des réservations et calcul du prix
         detailsArea = new JTextArea();
         detailsArea.setEditable(false);
-        detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane scrollPane = new JScrollPane(detailsArea);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -102,7 +99,6 @@ public class PanierView extends JFrame {
 
     private void loadReservationsAndCalculatePrices() {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date today = new Date();
             java.sql.Date sqlDate = new java.sql.Date(today.getTime());
             
@@ -128,8 +124,24 @@ public class PanierView extends JFrame {
             float totalSenior = 0;
             float totalChild = 0;
             float totalBeforeDiscount = 0;
+
+            //Récupération des réductions
+            Reduction reductionClientFrequent = reductionController.obtenirToutesReductions().stream()
+            .filter(r -> r.getTypeReduction() == 1) // Type 1 = client fréquent, 2 enfant, 3 sénior
+            .findFirst()
+            .orElse(null);
+            Reduction reductionEnfant = reductionController.obtenirToutesReductions().stream()
+            .filter(r -> r.getTypeReduction() == 2) 
+            .findFirst()
+            .orElse(null);
+            Reduction reductionSenior = reductionController.obtenirToutesReductions().stream()
+            .filter(r -> r.getTypeReduction() ==3) 
+            .findFirst()
+            .orElse(null);
+
+
             
-            // Calcul des prix sans réduction
+            // Calcul des prix 
             for (Reservation res : reservations) {
                 Attraction attraction = attractionController.obtenirToutesAttractions().stream()
                         .filter(a -> a.getIdAttraction() == res.getID_attraction())
@@ -138,13 +150,13 @@ public class PanierView extends JFrame {
                 
                 if (attraction != null) {
                     float adultPrice = res.getNb_adulte() * attraction.getPrixAttraction();
-                    float seniorPrice = res.getNb_senior() * attraction.getPrixAttraction() * 0.8f; // 20% de réduction pour seniors
-                    float childPrice = res.getNb_enfant() * attraction.getPrixAttraction() * 0.5f; // 50% de réduction pour enfants
+                    float seniorPrice = res.getNb_senior() * attraction.getPrixAttraction();
+                    float childPrice = res.getNb_enfant() * attraction.getPrixAttraction(); 
                     
                     sb.append(attraction.getNomAttraction()).append(":\n");
                     sb.append(String.format("  Adultes: %d x %.2f€ = %.2f€\n", res.getNb_adulte(), attraction.getPrixAttraction(), adultPrice));
-                    sb.append(String.format("  Seniors: %d x %.2f€ = %.2f€\n", res.getNb_senior(), attraction.getPrixAttraction() * 0.8f, seniorPrice));
-                    sb.append(String.format("  Enfants: %d x %.2f€ = %.2f€\n", res.getNb_enfant(), attraction.getPrixAttraction() * 0.5f, childPrice));
+                    sb.append(String.format("  Seniors: %d x %.2f€ = %.2f€\n", res.getNb_senior(), attraction.getPrixAttraction() , seniorPrice));
+                    sb.append(String.format("  Enfants: %d x %.2f€ = %.2f€\n", res.getNb_enfant(), attraction.getPrixAttraction() , childPrice));
                     sb.append(String.format("  Sous-total: %.2f€\n\n", adultPrice + seniorPrice + childPrice));
                     
                     totalAdult += adultPrice;
@@ -162,7 +174,7 @@ public class PanierView extends JFrame {
             // Réduction client fréquent
             if (hasPreviousReservation) {
                 Reduction frequentClientReduction = reductionController.obtenirToutesReductions().stream()
-                        .filter(r -> r.getTypeReduction() == 1) // Type 1 = client fréquent
+                        .filter(r -> r.getTypeReduction() == 1) // Type 1 = client fréquent, 2 enfant, 3 sénior
                         .findFirst()
                         .orElse(null);
                 
@@ -179,6 +191,10 @@ public class PanierView extends JFrame {
             
             float totalAfterDiscount = totalBeforeDiscount - totalDiscount;
             sb.append(String.format("\nTotal après réductions: %.2f€\n", totalAfterDiscount));
+
+            if (clientId==0) {
+                sb.append(String.format("\nCréez votre compte pour bénéficier de réductions sur les réservations !\n", totalAfterDiscount));
+            }
             
             detailsArea.setText(sb.toString());
             
