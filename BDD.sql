@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : dim. 20 avr. 2025 à 18:54
+-- Généré le : dim. 27 avr. 2025 à 18:03
 -- Version du serveur : 8.0.40
 -- Version de PHP : 8.3.14
 
@@ -71,10 +71,10 @@ CREATE TABLE `Attraction` (
 --
 
 INSERT INTO `Attraction` (`ID_attraction`, `nom_attraction`, `description_attraction`, `prix_attraction`, `chemin_image_attraction`) VALUES
-(1, 'Oziris', 'Grand huit', 21, 'images/oziris.jpg'),
-(2, 'Belle vue', 'Grande_roue', 30, 'images/grande_roue.jpg'),
-(3, 'Mouille qui peut', 'Grand Splash', 30, 'images/grand_splash.jpg'),
-(5, 'L\'envol', 'Chaises volantes', 10, 'images/chaise_volante.jpg');
+(1, 'Oziris', 'Préparez-vous à vivre une montée d\'adrénaline sur notre Grand huit ! Entre descentes vertigineuses, virages serrés et loopings renversants, cette attraction promet des émotions fortes et des souvenirs inoubliables pour les amateurs de sensations extrêmes.', 21, 'images/oziris.jpg'),
+(2, 'Belle vue', 'Offrez-vous un moment suspendu dans les airs avec la Grande roue. Prenez place dans une cabine et admirez un panorama exceptionnel à 360 degrés. De jour comme de nuit, c’est l’attraction idéale pour profiter d’une vue imprenable et magique.', 30, 'images/grande_roue.jpg'),
+(3, 'Mouille qui peut', 'En quête de fraîcheur et d\'aventure ? Embarquez pour le Grand Splash ! Montez à bord d’une embarcation, grimpez au sommet... puis dévalez à toute vitesse pour un atterrissage spectaculaire dans l’eau. Rires et éclaboussures garantis !', 30, 'images/grand_splash.jpg'),
+(5, 'L\'envol', 'Laissez-vous emporter par le vent à bord des Chaises volantes ! Confortablement installé, vous vous élèverez doucement avant de tournoyer dans les airs, porté par la brise. Une sensation de liberté et de légèreté à partager en famille ou entre amis !', 10, 'images/chaise_volante.jpg');
 
 -- --------------------------------------------------------
 
@@ -112,6 +112,13 @@ CREATE TABLE `Reduction` (
   `type_reduction` int NOT NULL COMMENT 'type_reduction : 1 - client fréquent 2 - client enfant 3 - client sénior'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `Reduction`
+--
+
+INSERT INTO `Reduction` (`ID_reduction`, `nom_reduction`, `pourcentage_reduction`, `type_reduction`) VALUES
+(1, 'Jeune', '20%', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -135,8 +142,13 @@ CREATE TABLE `Reservation` (
 --
 
 INSERT INTO `Reservation` (`ID_reservation`, `date_reservation`, `date_visite`, `nb_adulte`, `nb_senior`, `nb_enfant`, `ID_client`, `ID_attraction`, `paye_reservation`) VALUES
-(9, '2025-04-20', '2004-12-02', 1, 1, 1, 0, 1, 0),
-(10, '2025-04-20', '2003-10-02', 1, 1, 1, 0, 1, 0);
+(9, '2025-04-20', '2004-12-02', 1, 1, 1, 0, 1, 1),
+(10, '2025-04-20', '2003-10-02', 1, 1, 1, 0, 1, 1),
+(11, '2025-04-20', '2002-10-03', 1, 2, 1, 1, 1, 0),
+(12, '2025-04-26', '2004-05-12', 1, 0, 0, 0, 2, 1),
+(13, '2025-04-26', '2001-12-02', 1, 0, 0, 0, 3, 0),
+(14, '2025-04-26', '2002-11-11', 1, 2, 1, 1, 1, 0),
+(15, '2025-04-26', '2001-12-02', 1, 0, 1, 1, 5, 0);
 
 --
 -- Index pour les tables déchargées
@@ -208,13 +220,13 @@ ALTER TABLE `Client`
 -- AUTO_INCREMENT pour la table `Reduction`
 --
 ALTER TABLE `Reduction`
-  MODIFY `ID_reduction` int NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_reduction` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Reservation`
 --
 ALTER TABLE `Reservation`
-  MODIFY `ID_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ID_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées
